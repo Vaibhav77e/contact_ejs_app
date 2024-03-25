@@ -21,7 +21,7 @@ databaseConnect();
 
 // import the routes
 const authRoutes = require('./routes/AuthRoutes/auth_routes');
-
+    
 const staticRoute = require('./routes/staticRoutes');
 
 
