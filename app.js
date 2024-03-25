@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
 const dotenv = require('dotenv');
+const path = require('path');
+
 
 // set up env file
 dotenv.config({path:'./config/config.env'});
@@ -18,12 +20,19 @@ app.use(express.urlencoded());
 databaseConnect();
 
 // import the routes
-const authRoutes = require('./routes/AuthRoutes/auth_routes')
+const authRoutes = require('./routes/AuthRoutes/auth_routes');
+
+const staticRoute = require('./routes/staticRoutes');
+
+
+//set template engine
+app.set('view engine', 'ejs');
+app.set("views",path.resolve("./views"));
 
 // setup the routes for the application
 
 app.use('/api/v1',authRoutes);
-
+app.use('/',staticRoute);
 
 
 app.listen(PORT,()=>{

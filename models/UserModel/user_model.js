@@ -8,10 +8,6 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true,
     },
-    age:{
-        type:String,
-        required: true,
-    },
     email:{
         type: String,
         required: true,
@@ -28,11 +24,6 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true,
         minLength:[8,"The password must be of 8 characters"]
-    },
-    address:{
-        type: String,
-        required: true,
-        maxLength:[1000,"Can't be greater than 1000 characters'"]
     },
 },
 {
