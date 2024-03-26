@@ -56,7 +56,10 @@ crossorigin="anonymous" referrerpolicy="no-referrer">
                             <td>
                                 <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal" data-contact-id="<%= contact.id %>" data-contact-name="<%= contact.name %>" data-contact-phone="<%= contact.phone %>">Edit</button>
 
-                                <a href="" class="text-danger"><i class="fas fa-trash fa-lg mx-1"></i></a>
+                                <button type="button" class="btn btn-danger" onclick="deleteContact('<%= contact.id %>')">Delete</button>
+
+<!--
+                                <a href="" class="text-danger"><i class="fas fa-trash fa-lg mx-1"></i></a> -->
                             </td>
                         </tbody>
                    <% })%>
@@ -67,7 +70,7 @@ crossorigin="anonymous" referrerpolicy="no-referrer">
 
     <script>
         $('#exampleModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget); 
+            var button = $(event.relatedTarget);
             var recipientId = button.data('contact-id');
             var recipientName = button.data('contact-name');
             var recipientPhone = button.data('contact-phone');
@@ -123,6 +126,33 @@ crossorigin="anonymous" referrerpolicy="no-referrer">
         </div>
     </div>
 </div>
+
+<script>
+    function deleteContact(contactId) {
+        if (confirm("Are you sure you want to delete this contact?")) {
+            $.ajax({
+                url: '/delete-contact',
+                method: 'DELETE',
+                data: { id: contactId },
+                success: function (response) {
+            
+                    console.log(response);
+       
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+    }
+</script>
+
+
+<script>
+    
+</script>
+
 
 
 
