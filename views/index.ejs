@@ -15,6 +15,13 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-K+1n7v3O5NhvNUv3C2ZpL0MpePbz5T/Bu5u8AOz5fAk=" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js" integrity="sha256-T1eNKxjk2SiKt33aP5E7CDdtW2sWuv5h0+zX5UZIHoM=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css" integrity="sha256-tCcymw0JnB5D0s93stv1V/Z2Y2TIynQXTGAXIBqpFvM=" crossorigin="anonymous" />
+    <link href = 
+    "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css"
+            rel = "stylesheet"> 
+        <script src = "https://code.jquery.com/jquery-1.10.2.js"> 
+            </script> 
+        <script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"> 
+            </script> 
 
 </head>
 <body>
@@ -56,10 +63,11 @@ crossorigin="anonymous" referrerpolicy="no-referrer">
                             <td>
                                 <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal" data-contact-id="<%= contact.id %>" data-contact-name="<%= contact.name %>" data-contact-phone="<%= contact.phone %>">Edit</button>
 
-                                <button type="button" class="btn btn-danger" onclick="deleteContact('<%= contact.id %>')">Delete</button>
+                                <button id = "gfg">Open Dialog</button> 
 
-<!--
-                                <a href="" class="text-danger"><i class="fas fa-trash fa-lg mx-1"></i></a> -->
+                                <!-- <button type="button" class="btn btn-danger" onclick="deleteContact('<%= contact.id %>')">Delete</button> -->
+
+                                <!-- <a href="" class="text-danger"><i class="fas fa-trash fa-lg mx-1"></i></a> -->
                             </td>
                         </tbody>
                    <% })%>
@@ -129,6 +137,8 @@ crossorigin="anonymous" referrerpolicy="no-referrer">
 
 <script>
     function deleteContact(contactId) {
+        console.log("Triggered");
+        console.log(contactId);
         if (confirm("Are you sure you want to delete this contact?")) {
             $.ajax({
                 url: '/delete-contact',
@@ -149,8 +159,20 @@ crossorigin="anonymous" referrerpolicy="no-referrer">
 </script>
 
 
-<script>
-    
+   <!-- using jQuery -->
+
+   <script type = "text/javascript"> 
+    $(function() { 
+        $( "#gfg2" ).dialog({ 
+    autoOpen: false, 
+        create: function( event, ui ) { 
+            console.log('created') 
+        }, 
+        }); 
+        $( "#gfg" ).click(function() { 
+        $( "#gfg2" ).dialog( "open" ); 
+        }); 
+    }); 
 </script>
 
 
