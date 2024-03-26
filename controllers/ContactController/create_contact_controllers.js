@@ -29,9 +29,9 @@ exports.createNewContact = async(req,res)=>{
         console.log(`Success ${contact}`);
 
 
-    //    res.redirect("/",);
+        res.redirect("/",);
 
-         res.render('index', {contacts: contact});
+        //res.render('index', {contacts: contact});
     }catch(err){
         return res.status(500).json({message: err.message});
     }
