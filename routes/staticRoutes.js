@@ -2,34 +2,16 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/',(req,res)=>{
-    res.render("index",{title:"Vaibhav",body:"Yen matha idhini antha gothilla"});
+    res.render("index",{title:"Nation pride",body:"India the great"});
 });
 
-router.post('/add',(req,res)=>{
+router.post('/contacts/add_user',(req,res)=>{
     res.render("add_user",{title:"Add Users",body:"Add Users"});
 });
 
-// router.post('/add', (req,res)=>{
-//     const {name,phoneNumber} = req.body;
-
-//     contact =  Contact.create({
-//             //userId: userId,
-//             name:name,
-//             phoneNumber:phoneNumber,
-//     });
-//     if(!contact){
-//         return res.status(404).json({message:"Couldn't create contact,something went wrong"});
-//     }
-
-//    contact.save((err)=>{
-//     if(err){
-//         res.json({message: err.message,type:"danger"});
-//     }else{
-//         console.log("Contacts created successfully");
-//         res.redirect('/');
-//     }
-//    });
-
-// });
+// About route
+router.get('/about', (req, res) => {
+    res.render('about', { title: 'About Page' });
+  });
 
 module.exports = router;

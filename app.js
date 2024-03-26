@@ -3,7 +3,6 @@ const app = express();
 const dotenv = require('dotenv');
 const path = require('path');
 
-
 // set up env file
 dotenv.config({path:'./config/config.env'});
 
@@ -21,6 +20,7 @@ databaseConnect();
 
 // import the routes
 const authRoutes = require('./routes/AuthRoutes/auth_routes');
+const contactRoutes = require('./routes/ContactsRoutes/contacts_routes');
     
 const staticRoute = require('./routes/staticRoutes');
 
@@ -33,6 +33,7 @@ app.set("views",path.resolve("./views"));
 
 app.use('/api/v1',authRoutes);
 app.use('/',staticRoute);
+app.use('/contacts',contactRoutes);
 
 
 app.listen(PORT,()=>{
