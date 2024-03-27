@@ -1,7 +1,9 @@
 const User = require('../../models/UserModel/user_model');
 const sendToken = require('../../utils/sendToken');
+const authenticateUser = require('../../middlewares/authenticateUser');
 
 exports.loginUser = async(req, res, next) => {
+        const contacts =[];
         try{
             const {email,password} = req.body;
 
@@ -26,7 +28,13 @@ exports.loginUser = async(req, res, next) => {
                 });
             }
 
-            sendToken(user,200,res);
+            // const token = await user.generateAuthTokens()
+            // res.cookie('token', token, {httpOnly: true})
+            // res.render('index',{contacts:contacts})
+
+            authenticateUser();
+
+            //sendToken(user,200,res);
 
         }catch(e){
             return res.status(500).json({message:e.message})

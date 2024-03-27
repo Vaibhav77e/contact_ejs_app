@@ -57,6 +57,26 @@
                     </div>
                 </div>
             </div>
+
+            <script>
+                // Example function to get token from local storage
+function getToken() {
+    return localStorage.getItem('token');
+  }
+  
+  // Example AJAX request with token
+  $.ajax({
+    url: '/create_new_account',
+    type: 'POST',
+    headers: {
+      'Authorization': `Bearer ${getToken()}`
+    },
+    success: function(response) {
+      console.log(response);
+    }
+  });
+  
+</script>
 </body>
 
 </html>

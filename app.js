@@ -3,6 +3,15 @@ const app = express();
 const dotenv = require('dotenv');
 const path = require('path');
 const cookieParser = require('cookie-parser');
+const csrf = require('csurf');
+const csrfProtection = csrf({cookie: true});
+const isUserAuthenticated = require('./middlewares/isUserAuthenticated');
+
+
+// import the routes
+const authRoutes = require('./routes/AuthRoutes/auth_routes');
+const contactRoutes = require('./routes/ContactsRoutes/contacts_routes');
+const staticRoute = require('./routes/staticRoutes');
 
 // set up env file
 dotenv.config({path:'./config/config.env'});
@@ -13,17 +22,25 @@ const databaseConnect = require('./database/database');
 const PORT = process.env.PORT || 5000;
 
 // convert the data into json format
+app.use(cookieParser({debug:true}));
 app.use(express.json());
 app.use(express.urlencoded());
-app.use(cookieParser());
+
+// app.use(csrfProtection);
+
+// app.use(isUserAuthenticated, (req,res,next) => {
+//     res.locals.isAuth = req.user;
+//     res.locals.csrfToken = req.csrfToken();
+//     next()
+//     // MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 exit listeners added to [Bus].
+//     // Use emitter.setMaxListeners() to increase limit
+// });
 
 // call the function that invokes database function
 databaseConnect();
 
-// import the routes
-const authRoutes = require('./routes/AuthRoutes/auth_routes');
-const contactRoutes = require('./routes/ContactsRoutes/contacts_routes');
-const staticRoute = require('./routes/staticRoutes');
+
+
 
 
 //set template engine

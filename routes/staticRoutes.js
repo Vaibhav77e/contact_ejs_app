@@ -7,8 +7,10 @@ const bcrypt = require('bcryptjs');
 
 const {viewAllMyContacts} = require('../controllers/ContactController/view_contact_controller');
 const isUserAuthenticated = require('../middlewares/isUserAuthenticated');
-
+const authenticateUser = require('../middlewares/authenticateUser');
 const sendToken = require('../utils/sendToken');
+
+
 
 // router.get('/',(req,res)=>{
 //     res.render("index",{title:"Nation pride",body:"India the great"});
@@ -110,33 +112,29 @@ router.post('/contacts/add_user',(req,res)=>{
 
 // create new account api
 router.post('/create_new_account',
-isUserAuthenticated,
+authenticateUser,
 async(req,res)=>{
     console.log(`Waked :${req.body}`);
     const {name,phone} = req.body;
 
     console.log(`name : ${name} and  ${phone}`);
 
-    const userId = req.user.id;
-    if(!userId){
-        return res.status(404).json({message:"User not found"});
-    }
+    // const userId = res.locals.isAuth.id;
+    // console.log(`userId : ${userId}`);
+    // if(!userId){
+    //     return res.status(404).json({message:"User not found"});
+    // }
     try{
-        let contact = await Contact.find({userId: userId});
-        console.log(`Contacts daa : ${contact}`);
-        console.log(`Creating contact ${userId} ${phoneNumber}`);
-        contact = await Contact.create({
-                    //userId: userId,s
-                    name:name,
-                    phone:phone,
+       // let contact = await Contacts.find({userId: userId});
+       let contact = await Contacts.create({
+           //userId: userId,s
+           name:name,
+           phone:phone,
         });
+        console.log(`Contacts daa : ${contact}`);
         if(!contact){
             return res.status(404).json({message:"Couldn't create contact,something went wrong"});
         }
-
-        // contact = await Contact.find();
-
-        // console.log(`Success ${contact}`);
 
         res.redirect("/",);
 
