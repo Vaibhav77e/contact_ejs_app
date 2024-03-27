@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const dotenv = require('dotenv');
 const path = require('path');
+const cookieParser = require('cookie-parser');
 
 // set up env file
 dotenv.config({path:'./config/config.env'});
@@ -14,6 +15,7 @@ const PORT = process.env.PORT || 5000;
 // convert the data into json format
 app.use(express.json());
 app.use(express.urlencoded());
+app.use(cookieParser());
 
 // call the function that invokes database function
 databaseConnect();
@@ -21,7 +23,6 @@ databaseConnect();
 // import the routes
 const authRoutes = require('./routes/AuthRoutes/auth_routes');
 const contactRoutes = require('./routes/ContactsRoutes/contacts_routes');
-    
 const staticRoute = require('./routes/staticRoutes');
 
 

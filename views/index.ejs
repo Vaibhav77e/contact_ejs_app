@@ -26,92 +26,75 @@ integrity="sha512-7Pi/otdlbbCR+LnW+F7PwFcSDJOuUJB3OxtEHbg4vSMvzvJjde4Po1v4BR9Gdc
 crossorigin="anonymous" referrerpolicy="no-referrer">
 </script>
 <div class="container">
-    <div class="row my-4">
-        <div class="col-lg-12">
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                    <tr class="table-dark">
-                        <th>Id</th>
-                        <th>Image</th>
-                        <th>Name</th>
-                        <th>Phone Number</th>
-                        <th>Actions</th>
-                    </tr>
-                    </thead>
-                    <% contacts.forEach(function(contact,index){%>
-                        <tbody>
-                            <td>
-                            <%= index + 1 %>
-                            </td>
-                            <td>
-                                <div class="rounded-circle bg-primary text-light mr-2" style="width: 30px; height: 30px; display: flex; justify-content: center; align-items: center;">
-                                    <%= contact.name.charAt(0).toUpperCase() %>
-                                  </div>
-                            </td>
-                            <td><%=contact.name%></td>
-                            <td><%=contact.phone%></td>
-                            <td>
-                                <!-- <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal" data-contact-id="<%= contact.id %>" data-contact-name="<%= contact.name %>" data-contact-phone="<%= contact.phone %>">Edit</button> -->
-                                <!-- <button type="button" class="btn btn-danger" onclick="deleteContact('<%= contact.id %>')">Delete</button>  -->
-                                <a href="/edit/<%=contact.id %>" class="text-success"><i class="fas fa-edit fa-lg mx-1"></i></a>
-                                <a href="/delete/<%=contact.id %>" class="text-danger"><i class="fas fa-trash fa-lg mx-1"></i></a>
-                            </td>
-                        </tbody>
-                   <% })%>
-                </table>
+    <% if (!contacts || contacts.length === 0) { %>
+        <div class="alert alert-info" role="alert">
+            No contacts available.
+        </div>
+    <% } else { %>
+        <div class="row my-4">
+            <div class="col-lg-12">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr class="table-dark">
+                                <th>Id</th>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Phone Number</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <% contacts.forEach(function(contact,index){%>
+                            <tbody>
+                                <td>
+                                    <%= index + 1 %>
+                                </td>
+                                <td>
+                                    <div class="rounded-circle bg-primary text-light mr-2" style="width: 30px; height: 30px; display: flex; justify-content: center; align-items: center;">
+                                        <%= contact.name.charAt(0).toUpperCase() %>
+                                    </div>
+                                </td>
+                                <td><%=contact.name%></td>
+                                <td><%=contact.phone%></td>
+                                <td>
+                                    <a href="/edit/<%=contact.id %>" class="text-success"><i class="fas fa-edit fa-lg mx-1"></i></a>
+                                    <a href="/delete/<%=contact.id %>" class="text-danger"><i class="fas fa-trash fa-lg mx-1"></i></a>
+                                </td>
+                            </tbody>
+                        <% })%>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
+    <% } %>
 
-
-
-    <!-- <div style="position: fixed;top: 0px;left: 50vw;transform: translateX(-50px);background: white;padding: 20px;" id="popup" class="hidden">
-        <form style="display: flex;gap: 10px;flex-direction: column;justify-content: start;">
-            <div>
-                <input type="hidden" id="contact-id" />
-                <input type="text" id="contact-name" placeholder="Name"/>
-            </div>
-            <div>
-                <input type="text" id="contact-phone" placeholder="Phone Number"/>
-            </div>
-            <div>
-                <input type="submit" value="Update"/>
-                <button type="button" onclick="closePopup()">Close</button>
-            </div>
-        </form>
-    </div>
-</div> -->
-
-
-
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Contact</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="mb-3">
-                        <label for="recipient-name" class="col-form-label">Name</label>
-                        <input type="text" class="form-control" id="recipient-name">
-                    </div>
-                    <div class="mb-3">
-                        <label for="recipient-phone" class="col-form-label">Phone</label>
-                        <input type="text" class="form-control" id="recipient-phone">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save Changes</button>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Contact</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="recipient-name" class="col-form-label">Name</label>
+                            <input type="text" class="form-control" id="recipient-name">
+                        </div>
+                        <div class="mb-3">
+                            <label for="recipient-phone" class="col-form-label">Phone</label>
+                            <input type="text" class="form-control" id="recipient-phone">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save Changes</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
 
 </body>
 </html>

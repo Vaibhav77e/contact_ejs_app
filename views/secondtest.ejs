@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('styles/styles') %>
+
+<body>
+  <header class="showcase">
+    <div class="showcase-content">
+      <div class="showcase-top">
+        <h1>LOGIN</h1>
+      </div>
+      <div class="formm">
+        <form method="POST" action="/auth/login">
+          <h2>Welcome user!
+          </h2>
+          <div class="info">
+            <input class="email" type="email" placeholder="Email" id="email" name="email"> <br>
+            <input class="email" type="password" placeholder="Password" id="password" name="password">
+          </div>
+          <div class="btn">
+            <button class="btn-primary" type="submit">Log In</button>
+          </div>
+          </div>
+          <div class="signup">
+            <p>New to User ?</p>
+            <a href="http://localhost:3001/test">Sign up now</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </header>
+</body>
+
+</html>

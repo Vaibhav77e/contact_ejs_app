@@ -3,31 +3,29 @@
 
 <%- include('styles/styles') %>
 
+
 <body>
   <header class="showcase">
     <div class="showcase-content">
       <div class="showcase-top">
-        <h1>LOGIN</h1>
+        <h1>REGISTER</h1>
       </div>
       <div class="formm">
         <form method="POST" action="/auth/createAccount">
-          <h2>Welcome user!
+          <h2>Create new account
           </h2>
           <div class="info">
-            <input class="email" type="email" placeholder="Email" id="email"> <br>
-            <input class="email" type="password" placeholder="Password" id="password">
+            <input class="email" type="name" placeholder="Name" id="name" name="name" required> <br>
+            <input class="email" type="email" placeholder="Email" id="email" name="email" required> <br>
+            <input class="email" type="phone" placeholder="Phone" id="phone" name="phone" required> <br>
+            <input class="email" type="password" placeholder="Password" id="password" name="password" required>
           </div>
           <div class="btn">
-            <button class="btn-primary" type="submit" onclick="signIn()">Sign In</button>
-          </div>
-          <div class="help">
-            <div>
-              <input value="true" type="checkbox"><label>Remember me</label>
-            </div>
+            <button class="btn-primary" type="submit">Sign UP</button>
           </div>
           <div class="signup">
-            <p>New to User ?</p>
-            <a href="#">Sign up now</a>
+            <p>Already have an account?</p>
+            <a href="http://localhost:3001/secondtest">Log In</a>
           </div>
         </form>
       </div>

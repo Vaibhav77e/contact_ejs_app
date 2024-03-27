@@ -6,16 +6,16 @@ exports.createNewContact = async(req,res)=>{
 
     console.log(`name : ${name} and  ${phone}`);
 
-    // const userId = req.user.id;
-    // if(!userId){
-    //     return res.status(404).json({message:"User not found"});
-    // }
+    const userId = req.user.id;
+    if(!userId){
+        return res.status(404).json({message:"User not found"});
+    }
     try{
-        // let contact = await Contact.find({userId: userId});
-        // console.log(`Contacts daa : ${contact}`);
-        // console.log(`Creating contact ${userId} ${phoneNumber}`);
+        let contact = await Contact.find({userId: userId});
+        console.log(`Contacts daa : ${contact}`);
+        console.log(`Creating contact ${userId} ${phoneNumber}`);
         
-       let contact = await Contact.create({
+        contact = await Contact.create({
                     //userId: userId,s
                     name:name,
                     phone:phone,
@@ -24,10 +24,9 @@ exports.createNewContact = async(req,res)=>{
             return res.status(404).json({message:"Couldn't create contact,something went wrong"});
         }
 
-        contact = await Contact.find();
+        // contact = await Contact.find();
 
-        console.log(`Success ${contact}`);
-
+        // console.log(`Success ${contact}`);
 
         res.redirect("/",);
 

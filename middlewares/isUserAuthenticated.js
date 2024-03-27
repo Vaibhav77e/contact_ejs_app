@@ -1,12 +1,18 @@
 const User = require('../models/UserModel/user_model');
+const jwt = require('jsonwebtoken');
 
 
 const isUserAuthenticated = async (req, res, next) => {
     let token;
+    console.log(`Token is present : ${res.cookie.token}`);
     try{
-      if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
+    //   if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
+    //     token = req.headers.authorization.split(' ')[1];
+    //   }
+    if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
         token = req.headers.authorization.split(' ')[1];
-      }else{
+      }
+      else{
         return res.status(401).json({message: "You are not authorized to access this resource."});
     }
 

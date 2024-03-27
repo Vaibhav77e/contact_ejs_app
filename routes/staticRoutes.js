@@ -8,6 +8,8 @@ const bcrypt = require('bcryptjs');
 const {viewAllMyContacts} = require('../controllers/ContactController/view_contact_controller');
 const isUserAuthenticated = require('../middlewares/isUserAuthenticated');
 
+const sendToken = require('../utils/sendToken');
+
 // router.get('/',(req,res)=>{
 //     res.render("index",{title:"Nation pride",body:"India the great"});
 // });
@@ -21,44 +23,77 @@ const isUserAuthenticated = require('../middlewares/isUserAuthenticated');
 
 router.get('/test',(req, res)=>{
     res.render('test');
-})
+});
 
+router.get('/secondtest',(req, res)=>{
+    res.render('secondtest');
+});
+
+
+// register or create new user
 router.post('/auth/createAccount',async(req, res)=>{
     try{
-        const {name,age,email,phone,password,address} = req.body;
+        const {name,email,phone,password} = req.body;
 
         let user = await User.find({email:email});
 
-        if(user.length>0){
-            return res.status(400).json({
-                message:"User already exists.Please login different account or create one"
-            });
-        }
-
-        if(password.length<=0){
-            return res.status(404).json({
-                "message":"Please provide password"
-            })
+        if(!user){
+            // return res.status(400).json({
+            //     message:"User already exists.Please login different account or create one"
+            // });
+            console.log("User already exists.Please login different account or create one")
         }
 
         const hashedPassword =await bcrypt.hash(password,10);
+        // const hashedPassword = password;
 
         user = await User.create({
         name:name,
-        age:age,
         email:email,
         phone:phone,
         password:hashedPassword,
-        address:address});
+        });
 
         if(user===null){
             console.log("Couldn't create account");
             return;
         }
 
-        res.render('/');
+        res.render('secondtest')
     }catch(err){
         console.log(`Error whiling creating account: ${err.message}`)
+    }
+});
+
+
+// login to the account
+
+router.post('/auth/login',async(req,res)=>{
+    try{
+        const {email,password} = req.body;
+
+        console.log(`data : ${req.body.email}`)
+
+        let user = await User.findOne({email: email}).select('+password');
+
+        console.log(`user : ${user}`);
+   
+       if(user===null){
+            console.log(`Email not found`);
+            return;
+        }
+
+        const checkPassword = await user.comparePassword(password);
+        if(!checkPassword){
+            console.log("Password doesn't match");
+            return;
+         }
+
+         sendToken(user,200,res);
+
+    }catch(e){
+        console.log(`Error whiling logging into your account : ${e.message}`);
+        return;
     }
 })
 
@@ -67,10 +102,50 @@ router.post('/auth/createAccount',async(req, res)=>{
 // get the all contacts
 router.get('/',viewAllMyContacts);
 
-// create nwe account
+// create new account page
 router.post('/contacts/add_user',(req,res)=>{
     res.render("add_user",{title:"Add Users",body:"Add Users"});
 });
+
+
+// create new account api
+router.post('/create_new_account',
+isUserAuthenticated,
+async(req,res)=>{
+    console.log(`Waked :${req.body}`);
+    const {name,phone} = req.body;
+
+    console.log(`name : ${name} and  ${phone}`);
+
+    const userId = req.user.id;
+    if(!userId){
+        return res.status(404).json({message:"User not found"});
+    }
+    try{
+        let contact = await Contact.find({userId: userId});
+        console.log(`Contacts daa : ${contact}`);
+        console.log(`Creating contact ${userId} ${phoneNumber}`);
+        contact = await Contact.create({
+                    //userId: userId,s
+                    name:name,
+                    phone:phone,
+        });
+        if(!contact){
+            return res.status(404).json({message:"Couldn't create contact,something went wrong"});
+        }
+
+        // contact = await Contact.find();
+
+        // console.log(`Success ${contact}`);
+
+        res.redirect("/",);
+
+        //res.render('index', {contacts: contact});
+    }catch(err){
+        return res.status(500).json({message: err.message});
+    }
+}
+);
 
 // edit route
 router.get('/edit/:id',(req,res)=>{
@@ -117,7 +192,7 @@ router.get('/delete/:id',(req,res)=>{
 });
 
 
-
+// <<< ---------------------- Extra ------------------------------>>> 
 // About route
 router.get('/about', (req, res) => {
     res.render('about', { title: 'About Page' });
