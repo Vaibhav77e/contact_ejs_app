@@ -52,9 +52,10 @@ crossorigin="anonymous" referrerpolicy="no-referrer">
                             <td><%=contact.name%></td>
                             <td><%=contact.phone%></td>
                             <td>
-                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal" data-contact-id="<%= contact.id %>" data-contact-name="<%= contact.name %>" data-contact-phone="<%= contact.phone %>">Edit</button>
-                                <button type="button" class="btn btn-danger" onclick="deleteContact('<%= contact.id %>')">Delete</button>
-                                <!-- <a href="" class="text-danger"><i class="fas fa-trash fa-lg mx-1"></i></a> -->
+                                <!-- <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal" data-contact-id="<%= contact.id %>" data-contact-name="<%= contact.name %>" data-contact-phone="<%= contact.phone %>">Edit</button> -->
+                                <!-- <button type="button" class="btn btn-danger" onclick="deleteContact('<%= contact.id %>')">Delete</button>  -->
+                                <a href="/edit/<%=contact.id %>" class="text-success"><i class="fas fa-edit fa-lg mx-1"></i></a>
+                                <a href="/delete/<%=contact.id %>" class="text-danger"><i class="fas fa-trash fa-lg mx-1"></i></a>
                             </td>
                         </tbody>
                    <% })%>
