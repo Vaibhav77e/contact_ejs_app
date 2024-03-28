@@ -11,8 +11,7 @@
       </div>
       <div class="formm">
         <form method="POST" action="/auth/login">
-          <h2>Welcome user!
-          </h2>
+          <h2>Welcome user!</h2>
           <div class="info">
             <input class="email" type="email" placeholder="Email" id="email" name="email"> <br>
             <input class="email" type="password" placeholder="Password" id="password" name="password"> <br>
@@ -20,6 +19,9 @@
           <div class="btn">
             <button class="btn-primary" type="submit">Log In</button>
           </div>
+
+          <div id="error-message" class="error-message" style="display: none;">Incorrect email or password.</div>
+
           </div>
           <div class="signup">
             <p>New to User ?</p>

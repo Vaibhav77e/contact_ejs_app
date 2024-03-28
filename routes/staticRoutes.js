@@ -86,9 +86,12 @@ router.post('/auth/login',async(req,res)=>{
 
         const checkPassword = await user.comparePassword(password);
         if(!checkPassword){
-            console.log("Password doesn't match");
-            return;
-         }
+           return res.status(401).send('Incorrect email or password.');
+        }
+
+        // req.session.userId = email;
+        // console.log(req.session.userId);
+        // res.redirect('/index');
 
         sendToken(user,200,res);
 
@@ -96,7 +99,7 @@ router.post('/auth/login',async(req,res)=>{
         console.log(`Error whiling logging into your account : ${e.message}`);
         return;
     }
-})
+});
 
 
 /// <------- Contacts Routes --------------------> //////
@@ -112,7 +115,7 @@ router.post('/contacts/add_user', (req,res)=>{
 
 // create new account api
 router.post('/create_new_account',
-isUserAuthenticated,
+// isUserAuthenticated,
 async(req,res)=>{
     console.log(`Waked :${req.body}`);
     const {name,phone} = req.body;
@@ -140,15 +143,8 @@ async(req,res)=>{
 
         console.log(`Get Token again : ${req.token}`);
 
-        res.redirect('/').then(_ =>{
-            res.render
-        }).catch(err => {
+        res.render("index",{contacts: contacts});
 
-        })
-
-       // res.render("index",{token:req.token,contacts: contacts});
-
-        //res.render('index', {contacts: contact});
     }catch(err){
         return res.status(500).json({message: err.message});
     }
@@ -191,23 +187,69 @@ router.post('/update/:id',(req,res)=>{
 // delete route
 
 router.get('/delete/:id',
-    isUserAuthenticated,
+   
     (req,res)=>{
     let id = req.params.id;
 
-    try{
-        let contacts = Contacts.findByIdAndDelete(id);
-        res.render("index",{token:req.token,contacts: contacts});
-    }catch(err){
-        console.log(`Error while deleting the users ${err.message}`);
-    }
-
-    // Contacts.findByIdAndDelete(id).then(_ =>{
-    //     res.redirect('/');
-    // }).catch(err=>{
+    // try{
+    //     let contacts = Contacts.findByIdAndDelete(id);
+    //     res.render("index",{token:req.token,contacts: contacts});
+    // }catch(err){
     //     console.log(`Error while deleting the users ${err.message}`);
-    // });
+    // }
+
+    Contacts.findByIdAndDelete(id).then(_ =>{
+        res.redirect('/');
+    }).catch(err=>{
+        console.log(`Error while deleting the users ${err.message}`);
+    });
 });
 
 
 module.exports = router;
+
+
+/**
+ *  working but expected
+ <script>
+                // Example function to get token from local storage
+                function getToken() {
+                    return JSON.parse(localStorage.getItem("data"));
+                }
+
+                // Function to submit form data via AJAX
+                $('#add-form').submit(function(event) {
+                    // Prevent the default form submission
+                    event.preventDefault();
+
+                    // Get form data
+                    const formData = $(this).serializeArray();
+
+                    // AJAX request to submit form data
+                    $.ajax({
+                        url: '/create_new_account',
+                        type: 'POST',
+                        data: formData,
+                        headers: {
+                            'Authorization': `Bearer ${getToken()}`
+                        },
+                        success: function(response) {
+                            console.log(response);
+                            // Handle success response here
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(error);
+                            // Handle error response here
+                        }
+                    });
+                });
+            </script>
+
+
+ setting token
+
+    <script>
+        var data = JSON.parse('<%- JSON.stringify(token) %>');
+        localStorage.setItem("data", data);
+    </script>
+ */

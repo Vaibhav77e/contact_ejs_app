@@ -7,6 +7,8 @@ const csrf = require('csurf');
 const csrfProtection = csrf({cookie: true});
 const isUserAuthenticated = require('./middlewares/isUserAuthenticated');
 
+const session = require('express-session');
+
 
 // import the routes
 const authRoutes = require('./routes/AuthRoutes/auth_routes');
@@ -26,6 +28,7 @@ app.use(cookieParser({debug:true}));
 app.use(express.json());
 app.use(express.urlencoded());
 
+
 // app.use(csrfProtection);
 
 // app.use(isUserAuthenticated, (req,res,next) => {
@@ -40,7 +43,12 @@ app.use(express.urlencoded());
 databaseConnect();
 
 
-
+app.use(session({
+    secret: 'testing-re-testing',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: true }
+}));
 
 
 //set template engine

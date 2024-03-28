@@ -13,7 +13,9 @@ const sendToken = async(user,statusCode,res)=>{
     res
     .status(statusCode)
     .cookie('token',token,options)
-    .render('index',{contacts:contacts,token:token});
+    .render('index',{contacts:contacts,
+       // token:token,
+    });
 }
 
 module.exports = sendToken;
