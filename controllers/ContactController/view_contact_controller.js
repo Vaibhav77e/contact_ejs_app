@@ -3,6 +3,9 @@ const Contact = require('../../models/ContactsModel/contacts_model');
 exports.viewAllMyContacts = async (req, res,next) => {
     try {
         console.log('Getting users');
+        console.log(`Get the Stupid sessions : ${req.session}`);
+        console.log(`Get the Stupid sessions again : ${req.session.id}`);
+        res.locals.test = req.session.id;
         const contacts = await Contact.find();
         //res.json(contacts); // Sending contacts as JSON response
         res.render('index',{contacts: contacts});

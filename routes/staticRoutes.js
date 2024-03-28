@@ -89,11 +89,18 @@ router.post('/auth/login',async(req,res)=>{
            return res.status(401).send('Incorrect email or password.');
         }
 
-        // req.session.userId = email;
         // console.log(req.session.userId);
         // res.redirect('/index');
 
-        sendToken(user,200,res);
+        req.session.userId = user.id;
+
+        console.log(`user in login: ${req.session.userId}`);
+
+        let contacts = await Contacts.findById(req.session.userId);
+
+        res.render('index',{contacts:contacts});
+
+        //sendToken(user,200,req,res);
 
     }catch(e){
         console.log(`Error whiling logging into your account : ${e.message}`);
@@ -115,22 +122,24 @@ router.post('/contacts/add_user', (req,res)=>{
 
 // create new account api
 router.post('/create_new_account',
-// isUserAuthenticated,
+isUserAuthenticated,
 async(req,res)=>{
     console.log(`Waked :${req.body}`);
     const {name,phone} = req.body;
 
     console.log(`name : ${name} and  ${phone}`);
 
-    // const userId = res.locals.isAuth.id;
-    // console.log(`userId : ${userId}`);
-    // if(!userId){
-    //     return res.status(404).json({message:"User not found"});
-    // }
+    const userId = req.user.id;
+
+    console.log(`userId : ${userId}`);
+
+    if(!userId){
+        return res.status(404).json({message:"User not found"});
+    }
     try{
        // let contact = await Contacts.find({userId: userId});
        let contacts = await Contacts.create({
-           //userId: userId,s
+           userId: userId,
            name:name,
            phone:phone,
         });
@@ -139,9 +148,9 @@ async(req,res)=>{
             return res.status(404).json({message:"Couldn't create contact,something went wrong"});
         }
 
-        contacts = await Contacts.find();
+        contacts = await Contacts.findBy(userId);
 
-        console.log(`Get Token again : ${req.token}`);
+        console.log(`Contacts : ${contacts}`);
 
         res.render("index",{contacts: contacts});
 

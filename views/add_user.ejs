@@ -19,8 +19,6 @@
 <body>
 
     <%- include('layout/header') %>
-
-
         <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"
             integrity="sha512-7Pi/otdlbbCR+LnW+F7PwFcSDJOuUJB3OxtEHbg4vSMvzvJjde4Po1v4BR9Gdc9aXNUNFVUY+SK51wWT8WF0Gg=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -49,7 +47,6 @@
                                     <input class="form-control form-control-lg" type="file" name="image" required />
 
                                 </div> -->
-                                
                                 <div class="mb-3 d-grid">
                                     <input type="submit" name="submit" value="Add User" class="btnbtn-primary btn-lg" />
                                 </div>
@@ -58,6 +55,41 @@
                     </div>
                 </div>
             </div>
+
+
+            <script>
+                // Assign the token directly to a JavaScript variable
+                const token = '<%= global.whatever %>';
+                
+                // Function to submit form data via AJAX
+                $('#add-form').submit(function(event) {
+                    // Prevent the default form submission
+                    event.preventDefault();
+                
+                    // Get form data
+                    const formData = $(this).serializeArray();
+                
+                    // AJAX request to submit form data
+                    $.ajax({
+                        url: '/create_new_account',
+                        type: 'POST',
+                        data: formData,
+                        headers: {
+                            'Authorization': `Bearer ${token}` // Use the token variable here
+                        },
+                        success: function(response) {
+                            console.log(response);
+                            // Handle success response here
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(error);
+                            // Handle error response here
+                        }
+                    });
+                });
+            </script>
+            
+            
 
 </body>
 

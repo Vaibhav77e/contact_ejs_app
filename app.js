@@ -47,7 +47,10 @@ app.use(session({
     secret: 'testing-re-testing',
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: true }
+    cookie: { 
+    secure: true,
+    maxAge:3600000,
+ }
 }));
 
 
