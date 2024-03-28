@@ -52,9 +52,11 @@ const isUserAuthenticated = async(req,res, next) => {
     }else{
         const decodedToken =jwt.verify(token, process.env.JWT_SECRET_KEY)
         if(decodedToken){
+            req.token = token;
             req.user = decodedToken._id;
         }else{
-            req.user = null
+            req.token=null;
+            req.user = null;
         }
         next()
     }

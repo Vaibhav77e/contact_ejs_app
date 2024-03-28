@@ -1,6 +1,5 @@
 const User = require('../../models/UserModel/user_model');
 const sendToken = require('../../utils/sendToken');
-const authenticateUser = require('../../middlewares/authenticateUser');
 
 exports.loginUser = async(req, res, next) => {
         const contacts =[];
@@ -32,7 +31,6 @@ exports.loginUser = async(req, res, next) => {
             // res.cookie('token', token, {httpOnly: true})
             // res.render('index',{contacts:contacts})
 
-            authenticateUser();
 
             //sendToken(user,200,res);
 

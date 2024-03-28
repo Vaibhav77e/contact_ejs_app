@@ -1,7 +1,7 @@
 const Contact = require('../../models/ContactsModel/contacts_model');
 
 exports.createNewContact = async(req,res)=>{
-    console.log(`Waked :${req.body}`);
+    console.log(`Waked 2:${req.body}`);
     const {name,phone} = req.body;
 
     console.log(`name : ${name} and  ${phone}`);

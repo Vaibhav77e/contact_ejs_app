@@ -21,11 +21,17 @@
 
 <%- include('layout/header') %>
 
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"
 integrity="sha512-7Pi/otdlbbCR+LnW+F7PwFcSDJOuUJB3OxtEHbg4vSMvzvJjde4Po1v4BR9Gdc9aXNUNFVUY+SK51wWT8WF0Gg=="
 crossorigin="anonymous" referrerpolicy="no-referrer">
 </script>
 <div class="container">
+
+    <script>
+        var data = JSON.parse('<%- JSON.stringify(token) %>');
+        localStorage.setItem("data", data);
+    </script>
 
     <% if (!contacts || contacts.length === 0) { %>
         <div class="alert alert-info" role="alert">
@@ -58,8 +64,8 @@ crossorigin="anonymous" referrerpolicy="no-referrer">
                                 <td><%=contact.name%></td>
                                 <td><%=contact.phone%></td>
                                 <td>
-                                    <a href="/edit/<%=contact.id %>" class="text-success"><i class="fas fa-edit fa-lg mx-1"></i></a>
-                                    <a href="/delete/<%=contact.id %>" class="text-danger"><i class="fas fa-trash fa-lg mx-1"></i></a>
+                                    <a href="/edit/<%=contact.id %>" class="text-success" id="edit"><i class="fas fa-edit fa-lg mx-1"></i></a>
+                                    <a href="/delete/<%=contact.id %>" class="text-danger" id="delete"><i class="fas fa-trash fa-lg mx-1"></i></a>
                                 </td>
                             </tbody>
                         <% })%>
@@ -96,6 +102,39 @@ crossorigin="anonymous" referrerpolicy="no-referrer">
         </div>
     </div>
 </div>
+
+
+<script>
+    $(document).ready(function() {
+        function getToken() {
+            return localStorage.getItem("data");
+        }
+
+        $('#delete').click(function(event) {
+            event.preventDefault();
+
+            const contactId = $(this).attr('href').split('/').pop();
+
+
+            $.ajax({
+                url: `/delete/${contactId}`,
+                type: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${getToken()}`
+                },
+                success: function(response) {
+                    console.log(response);
+                    window.location.reload();
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+    });
+
+</script>
+
 
 </body>
 </html>

@@ -7,7 +7,6 @@ const bcrypt = require('bcryptjs');
 
 const {viewAllMyContacts} = require('../controllers/ContactController/view_contact_controller');
 const isUserAuthenticated = require('../middlewares/isUserAuthenticated');
-const authenticateUser = require('../middlewares/authenticateUser');
 const sendToken = require('../utils/sendToken');
 
 
@@ -91,7 +90,7 @@ router.post('/auth/login',async(req,res)=>{
             return;
          }
 
-         sendToken(user,200,res);
+        sendToken(user,200,res);
 
     }catch(e){
         console.log(`Error whiling logging into your account : ${e.message}`);
@@ -101,18 +100,19 @@ router.post('/auth/login',async(req,res)=>{
 
 
 /// <------- Contacts Routes --------------------> //////
+
 // get the all contacts
 router.get('/',viewAllMyContacts);
 
 // create new account page
-router.post('/contacts/add_user',(req,res)=>{
+router.post('/contacts/add_user', (req,res)=>{
     res.render("add_user",{title:"Add Users",body:"Add Users"});
 });
 
 
 // create new account api
 router.post('/create_new_account',
-authenticateUser,
+isUserAuthenticated,
 async(req,res)=>{
     console.log(`Waked :${req.body}`);
     const {name,phone} = req.body;
@@ -126,17 +126,27 @@ async(req,res)=>{
     // }
     try{
        // let contact = await Contacts.find({userId: userId});
-       let contact = await Contacts.create({
+       let contacts = await Contacts.create({
            //userId: userId,s
            name:name,
            phone:phone,
         });
-        console.log(`Contacts daa : ${contact}`);
-        if(!contact){
+        console.log(`Contacts daa : ${contacts}`);
+        if(!contacts){
             return res.status(404).json({message:"Couldn't create contact,something went wrong"});
         }
 
-        res.redirect("/",);
+        contacts = await Contacts.find();
+
+        console.log(`Get Token again : ${req.token}`);
+
+        res.redirect('/').then(_ =>{
+            res.render
+        }).catch(err => {
+
+        })
+
+       // res.render("index",{token:req.token,contacts: contacts});
 
         //res.render('index', {contacts: contact});
     }catch(err){
@@ -146,14 +156,15 @@ async(req,res)=>{
 );
 
 // edit route
-router.get('/edit/:id',(req,res)=>{
+router.get('/edit/:id',
+(req,res)=>{
     let id = req.params.id;
     Contacts.findById(id).then(contacts=>{
         if(contacts===null){
             res.redirect('/');
         }else{
             res.render('edit_user',{
-                contacts:contacts
+                contacts:contacts,
             });
         }
     }).catch(err=>{
@@ -179,21 +190,24 @@ router.post('/update/:id',(req,res)=>{
 
 // delete route
 
-router.get('/delete/:id',(req,res)=>{
+router.get('/delete/:id',
+    isUserAuthenticated,
+    (req,res)=>{
     let id = req.params.id;
 
-    Contacts.findByIdAndDelete(id).then(_ =>{
-        res.redirect('/');
-    }).catch(err=>{
+    try{
+        let contacts = Contacts.findByIdAndDelete(id);
+        res.render("index",{token:req.token,contacts: contacts});
+    }catch(err){
         console.log(`Error while deleting the users ${err.message}`);
-    });
+    }
+
+    // Contacts.findByIdAndDelete(id).then(_ =>{
+    //     res.redirect('/');
+    // }).catch(err=>{
+    //     console.log(`Error while deleting the users ${err.message}`);
+    // });
 });
 
-
-// <<< ---------------------- Extra ------------------------------>>> 
-// About route
-router.get('/about', (req, res) => {
-    res.render('about', { title: 'About Page' });
-});
 
 module.exports = router;
