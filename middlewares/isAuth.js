@@ -4,7 +4,10 @@ const isAuth = (req, res,next) => {
     // }else{
     //     res.redirect('/login');
     // }
-    if( req.session.userId!==null){
+
+    console.log(`isAuth : ${req.session.userId}`);
+
+    if(req.session.userId !== undefined){
         next();
     }else{
         res.redirect('/login');

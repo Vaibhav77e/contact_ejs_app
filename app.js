@@ -2,9 +2,6 @@ const express = require('express');
 const app = express();
 const dotenv = require('dotenv');
 const path = require('path');
-// const cookieParser = require('cookie-parser');
-const csrf = require('csurf');
-
 
 const session = require('express-session');
 const MongoDBSession = require('connect-mongodb-session')(session);
@@ -24,36 +21,27 @@ const databaseConnect = require('./database/database');
 const PORT = process.env.PORT || 5000;
 
 // convert the data into json format
-// app.use(cookieParser({debug:true}));
 app.use(express.json());
 app.use(express.urlencoded());
-
-
-// app.use(csrfProtection);
-
-// app.use(isUserAuthenticated, (req,res,next) => {
-//     res.locals.isAuth = req.user;
-//     res.locals.csrfToken = req.csrfToken();
-//     next()
-//     // MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 exit listeners added to [Bus].
-//     // Use emitter.setMaxListeners() to increase limit
-// });
 
 // call the function that invokes database function
 databaseConnect();
 
 // set up mongodb session connect for storing the sessions
-
 const store = new MongoDBSession({
     uri:process.env.DB_URL,
     collection:"mySessionsForContacts",
 });
 
+// setup session middleware
 app.use(session({
     secret:"secret-key-whatever",
     resave:false,
     saveUninitialized:false,
-    store:store
+    store:store,
+    cookie:{
+        maxAge:600000 // 600000 ms ---->>> 10 mins
+    }
 }));
 
 
@@ -66,7 +54,6 @@ app.set("views",path.resolve("./views"));
 app.use('/',staticRoute);
 // app.use('/api/v1',authRoutes);
 // app.use('/contacts',contactRoutes);
-
 
 app.listen(PORT,()=>{
     console.log(`listening on port: ${PORT}`);

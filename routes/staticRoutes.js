@@ -18,12 +18,16 @@ const {deleteContact} = require('../controllers/ContactController/delete_contact
 //// <<< ------------------- middleware ----------------------->>>>
 const isAuth = require('../middlewares/isAuth');
 
+
+
 /// <------------- Auth Routes ---------------------->
 
+// to render the register page
 router.get('/register',(req, res)=>{
     res.render('register');
 });
 
+// to render the login page
 router.get('/login',(req, res)=>{
     res.render('login');
 });
@@ -34,12 +38,11 @@ router.post('/register',createNewAccount);
 // login to your account
 router.post('/login',loginUser);
 
-// logout of yout account
+// logout of your account
 router.get('/logout',logout);
 
 
 /// <------- Contacts Routes --------------------> //////
-
 
 // get the all contacts
 router.get('/view',isAuth,viewAllMyContacts);
@@ -70,8 +73,8 @@ router.get('/edit/:id',
     });
 });
 
-// update route
 
+// update route
 router.post('/update/:id',isAuth,updateContacts);
 
 // delete route
