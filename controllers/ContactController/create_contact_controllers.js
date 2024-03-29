@@ -2,12 +2,7 @@ const Contacts = require('../../models/ContactsModel/contacts_model');
 
 exports.createNewContact = async(req,res)=>{
     const {name,phone} = req.body;
-
-    console.log(`name : ${name} and  ${phone}`);
-
     const userId = req.session.userId;
-
-    console.log(`userId : ${userId}`);
 
     if(!userId){
         return res.status(404).json({message:"User not found"});
@@ -20,9 +15,11 @@ exports.createNewContact = async(req,res)=>{
         contacts.forEach(contact => {
             if (contact.name === name) {
                 contactExists = true;
-                 return res.status(400).json({ message: "Contact with this name is already saved to your account" });
+                return res.render("add_user",{title:"Add Users",body:"Add Users",error:'Contact with this name is already saved to your account'});
+                return res.status(400).json({ message: "Contact with this name is already saved to your account" });
             } else if (contact.phone === phone) {
                 contactExists = true;
+                return res.render("add_user",{title:"Add Users",body:"Add Users",error:'This contact number is already added to your account'});
                 return res.status(400).json({ message: "This contact number is already added to your account" });
             }
         });

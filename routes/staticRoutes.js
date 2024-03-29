@@ -49,7 +49,7 @@ router.get('/view',isAuth,viewAllMyContacts);
 
 // create new account page
 router.post('/contacts/add_user', (req,res)=>{
-    res.render("add_user",{title:"Add Users",body:"Add Users"});
+    res.render("add_user",{title:"Add Users",body:"Add Users",error:''});
 });
 
 
@@ -66,6 +66,7 @@ router.get('/edit/:id',
         }else{
             res.render('edit_user',{
                 contacts:contacts,
+                error:''
             });
         }
     }).catch(err=>{

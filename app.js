@@ -35,9 +35,9 @@ const store = new MongoDBSession({
 
 // setup session middleware
 app.use(session({
-    secret:"secret-key-whatever",
-    resave:false,
-    saveUninitialized:false,
+    secret:"secret-key-whatever", // a secret string used to sign the session ID cookie
+    resave:false,  // don't save session if unmodified
+    saveUninitialized:false, // don't create session until something stored
     store:store,
     cookie:{
         maxAge:600000 // 600000 ms ---->>> 10 mins

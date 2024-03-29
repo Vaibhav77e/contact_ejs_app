@@ -23,9 +23,11 @@ exports.updateContacts = async(req,res)=>{
         // after checking if the id's are not same then allow user to edit the contact but the name and phone number should match present in the DB
             if (contact.name === name) {
                 contactExists = true;
+                return res.render('edit_user',{contacts:contacts,error:'Contact with this same name is already present in your account'});
                 return res.status(400).json({ message: "Contact with this same name is already present in your account" });
             } else if (contact.phone === phone) {
                 contactExists = true;
+                return res.render('edit_user',{contacts:contacts,error:'Same contact number is already saved in your account'});
                 return res.status(400).json({ message: "Same contact number is already saved in your account" });
             }
            }
