@@ -11,6 +11,21 @@ exports.updateContacts = async(req,res)=>{
             userId:id,
         }
 
+        let numericRegex = /^[0-9]+$/;
+
+        let isNumeric = numericRegex.test(phone);
+
+        console.log(`Check Number : ${isNumeric}`);
+
+        if(isNumeric===false){
+            return res.render('edit_user',{contacts:contacts,error:'Please provide correct format of number'});
+        }
+
+        if(phone.length>10||phone.length<10){
+            return res.render('edit_user',{contacts:contacts,error:'PNumber must be at 10 digits can\'t be more or less that'});
+        }
+
+
         let contacts = await Contacts.find(getContactsBasedOnUserId);
         let contactExists = false;
 

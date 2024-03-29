@@ -45,16 +45,6 @@
     </div>
 </nav>
 
-<script>
-    // Define a variable to hold the selected tag
-    let selectedTag = "";
-
-    // Function to update the selected tag when a button is clicked
-    function updateSelectedTag(tag) {
-        selectedTag = tag;
-    }
-</script>
-
 <div class="container">
     <div class="row my-4">
         <div class="col-lg-12">
@@ -66,8 +56,8 @@
                             <!-- Use a hidden input field to store the selected tag value -->
                             <input type="hidden" name="tag" value="<%= tag %>">
                             <!-- Use a submit button instead of a regular button -->
-                            <!-- Add an onclick event to update the selected tag -->
-                            <button type="submit" class="btn btn-secondary me-2 mb-2" onclick="updateSelectedTag('<%= tag %>')"><%= tag %></button>
+                            <!-- Add an onclick event to update the selected tag and change button color -->
+                            <button type="submit" class="btn btn-secondary me-2 mb-2 tag-button" data-tag="<%= tag %>"><%= tag %></button>
                         </form>
                     <% }) %>
                 <% }) %>
@@ -114,26 +104,6 @@
         </div>
     </div>
 </div>
-
-<script>
-    function toggleTag(button) {
-        button.classList.toggle('btn-primary');
-        button.classList.toggle('btn-secondary');
-    }
-
-    // Filter contacts based on selected tags
-    function filterContacts(tag) {
-        var rows = document.querySelectorAll('.contact-row');
-        rows.forEach(row => {
-            var tags = row.dataset.tags.split(',');
-            if (tags.includes(tag)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        });
-    }
-</script>
 
 </body>
 </html>
