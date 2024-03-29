@@ -1,10 +1,10 @@
 const Contacts = require('../../models/ContactsModel/contacts_model');
+const Tags = require('../../models/TagsModel/tags_model');
 
 exports.createNewContact = async(req,res)=>{
     const {name,phone,tags} = req.body;
     const userId = req.session.userId;
 
-    console.log(`Whatever : ${req.body.tags}`);
 
     if(!userId){
         return res.status(404).json({message:"User not found"});
@@ -27,13 +27,34 @@ exports.createNewContact = async(req,res)=>{
         });
 
         if (!contactExists) {
+
+            let getTags = await Tags.find({userId:userId});
+
+            if (getTags.length > 0) {
+                const newTagsList = [getTags[0].tags,...tags];
+
+                // newTagsList.push(getTags[0].tags);
+                // newTagsList.push(...tags)
+
+                console.log(`Tags : ${newTagsList}`);
+
+                getTags = await Tags.findOneAndUpdate({
+                    tags:newTagsList,
+                });
+            }else{
+                getTags = await Tags.create({
+                    userId: userId,
+                    tags:tags
+                });
+            }
+
             contacts = await Contacts.create({
                 userId: userId,
                 name: name,
                 phone: phone,
                 tags:tags
             });
-    
+
             console.log(`Contacts data: ${contacts}`);
             if (!contacts) {
                 return res.status(404).json({ message: "Couldn't create contact, something went wrong" });
