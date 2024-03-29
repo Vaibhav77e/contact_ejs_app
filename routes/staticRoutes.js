@@ -15,6 +15,8 @@ const {createNewContact} = require('../controllers/ContactController/create_cont
 const {updateContacts} = require('../controllers/ContactController/update_contact_controller');
 const {deleteContact} = require('../controllers/ContactController/delete_contact_controllers');
 
+const {getAllTags} = require('../controllers/TagsController/getAllTags');
+const {getContactsBasedOnSelection} = require('../controllers/TagsController/showSelectedContacts');
 //// <<< ------------------- middleware ----------------------->>>>
 const isAuth = require('../middlewares/isAuth');
 
@@ -85,5 +87,10 @@ router.get('/delete/:id',isAuth,deleteContact);
 router.get('/',(req,res)=>{
     res.render('landing');
 });
+
+
+router.get('/getAllTags',isAuth,getAllTags);
+
+router.post('/getContactBySelection',isAuth,getContactsBasedOnSelection);
 
 module.exports = router;

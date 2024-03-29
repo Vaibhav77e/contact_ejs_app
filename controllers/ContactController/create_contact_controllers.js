@@ -10,6 +10,21 @@ exports.createNewContact = async(req,res)=>{
         return res.status(404).json({message:"User not found"});
     }
     try{
+        // Regular expression to match only numeric characters
+        let numericRegex = /^[0-9]+$/;
+
+        let isNumeric = numericRegex.test(phone);
+
+        console.log(`Check Number : ${isNumeric}`);
+
+        if(isNumeric===false){
+            return res.render("add_user",{title:"Add Users",body:"Add Users",error:'Please provide correct format of number'});
+        }
+
+        if(phone.length>10||phone.length<10){
+            return res.render("add_user",{title:"Add Users",body:"Add Users",error:'Number must be at 10 digits can\'t be more or less that'});
+        }
+
         let contacts = await Contacts.find({userId:userId});
 
         let contactExists = false;
@@ -27,26 +42,6 @@ exports.createNewContact = async(req,res)=>{
         });
 
         if (!contactExists) {
-
-            let getTags = await Tags.find({userId:userId});
-
-            if (getTags.length > 0) {
-                const newTagsList = [getTags[0].tags,...tags];
-
-                // newTagsList.push(getTags[0].tags);
-                // newTagsList.push(...tags)
-
-                console.log(`Tags : ${newTagsList}`);
-
-                getTags = await Tags.findOneAndUpdate({
-                    tags:newTagsList,
-                });
-            }else{
-                getTags = await Tags.create({
-                    userId: userId,
-                    tags:tags
-                });
-            }
 
             contacts = await Contacts.create({
                 userId: userId,

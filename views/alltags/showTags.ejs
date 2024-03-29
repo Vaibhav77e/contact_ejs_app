@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nation Pride</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css"
+    integrity="sha512-jnSuA4Ss2PkkikSOLtYs8BlYIeeIK1h99ty4YfvRPAlzr377vr3CXDb7sb7eEEBYjDtcYj+AjBH3FLv5uSJuXg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-K+1n7v3O5NhvNUv3C2ZpL0MpePbz5T/Bu5u8AOz5fAk=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js" integrity="sha256-T1eNKxjk2SiKt33aP5E7CDdtW2sWuv5h0+zX5UZIHoM=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css" integrity="sha256-tCcymw0JnB5D0s93stv1V/Z2Y2TIynQXTGAXIBqpFvM=" crossorigin="anonymous" />
+</head>
+<body>
+
+<nav class="navbar bg-primary" data-bs-theme="dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Contact-App</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <form action="/view" method="GET">
+                        <button type="submit" class="nav-link">Home</button>
+                    </form>
+                    <form action="/contacts/add_user" method="POST">
+                        <button type="submit" class="nav-link">Add Contacts</button>
+                    </form>
+                    <form action="/getAllTags" method="GET">
+                        <button type="submit" class="nav-link">Show Contacts By Tag</button>
+                    </form>
+                    <form action="/logout" method="GET">
+                        <button type="submit" class="nav-link">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<script>
+    // Define a variable to hold the selected tag
+    let selectedTag = "";
+
+    // Function to update the selected tag when a button is clicked
+    function updateSelectedTag(tag) {
+        selectedTag = tag;
+    }
+</script>
+
+<div class="container">
+    <div class="row my-4">
+        <div class="col-lg-12">
+            <div class="d-flex flex-wrap">
+
+                <% contacts.forEach(function(contact) { %>
+                    <% contact.tags.forEach(function(tag) { %>
+                        <form action="/getContactBySelection" method="POST">
+                            <!-- Use a hidden input field to store the selected tag value -->
+                            <input type="hidden" name="tag" value="<%= tag %>">
+                            <!-- Use a submit button instead of a regular button -->
+                            <!-- Add an onclick event to update the selected tag -->
+                            <button type="submit" class="btn btn-secondary me-2 mb-2" onclick="updateSelectedTag('<%= tag %>')"><%= tag %></button>
+                        </form>
+                    <% }) %>
+                <% }) %>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+    <div class="row my-4">
+        <div class="col-lg-12">
+            <div class="table-responsive">
+                <table class="table table-striped" id="contactsTable">
+                    <thead>
+                        <tr class="table-dark">
+                            <th>Id</th>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Phone Number</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% contacts.forEach(function(contact, index) { %>
+                            <tr class="contact-row" data-tags="<%= contact.tags.join(',') %>">
+                                <td><%= index + 1 %></td>
+                                <td>
+                                    <div class="rounded-circle bg-primary text-light mr-2" style="width: 30px; height: 30px; display: flex; justify-content: center; align-items: center;">
+                                        <%= contact.name.charAt(0).toUpperCase() %>
+                                    </div>
+                                </td>
+                                <td><%= contact.name %></td>
+                                <td><%= contact.phone %></td>
+                                <td>
+                                    <a href="/edit/<%= contact.id %>" class="text-success"><i class="fas fa-edit fa-lg mx-1"></i></a>
+                                    <a href="/delete/<%= contact.id %>" class="text-danger"><i class="fas fa-trash fa-lg mx-1"></i></a>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleTag(button) {
+        button.classList.toggle('btn-primary');
+        button.classList.toggle('btn-secondary');
+    }
+
+    // Filter contacts based on selected tags
+    function filterContacts(tag) {
+        var rows = document.querySelectorAll('.contact-row');
+        rows.forEach(row => {
+            var tags = row.dataset.tags.split(',');
+            if (tags.includes(tag)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

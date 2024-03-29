@@ -55,7 +55,7 @@
                                     <div>
                                         Select the tags for your contacts
                                     </div>
-                                    <select class="js-example-tags" name="tags[]" multiple="multiple" style="width: 100%;">
+                                    <select class="js-example-tags" name="tags[]" multiple="multiple" style="width: 100%;" required>
                                             <!-- Add more options as needed -->
                                             <% contacts.tags.forEach(tag => { %>
                                                 <option value="<%= tag %>" selected><%= tag %></option>
