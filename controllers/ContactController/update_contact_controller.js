@@ -1,9 +1,8 @@
 const Contacts = require('../../models/ContactsModel/contacts_model');
 
 exports.updateContacts = async(req,res)=>{
-    const {name,phone} = req.body;
-    console.log(`name : ${name}`);
-    console.log(`phone: ${phone}`);
+    const {name,phone,tags} = req.body;
+
     const editId = req.params.id;
     try{
 
@@ -16,8 +15,8 @@ exports.updateContacts = async(req,res)=>{
         let contactExists = false;
 
         contacts.forEach(contact => {
-            console.log(`edited id : ${editId}`);
-            console.log(`Contacts ID : ${contact.id}`);
+            // console.log(`edited id : ${editId}`);
+            // console.log(`Contacts ID : ${contact.id}`);
         // first check whether the id which is passed same as contact.id if the ids are same in that case allow user to edit the contact
            if(editId!==contact.id){
         // after checking if the id's are not same then allow user to edit the contact but the name and phone number should match present in the DB
@@ -38,7 +37,8 @@ exports.updateContacts = async(req,res)=>{
             editId,
             {
                 name:name,
-                phone:phone
+                phone:phone,
+                tags:tags
             });
             if (!contacts) {
                 return res.status(404).json({ message: "Couldn't create contact, something went wrong" });

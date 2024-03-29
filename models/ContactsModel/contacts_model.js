@@ -15,6 +15,9 @@ const contactSchema = mongoose.Schema({
         maxLength:[10,"Phone number can't be more than 10 digits"],
         minLength:[10,"Phone number can't be less than 10 digits"],
     },
+    tags:{
+        type:Array,
+    }
 },
 {
     timestamps:true,

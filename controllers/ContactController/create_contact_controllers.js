@@ -1,8 +1,10 @@
 const Contacts = require('../../models/ContactsModel/contacts_model');
 
 exports.createNewContact = async(req,res)=>{
-    const {name,phone} = req.body;
+    const {name,phone,tags} = req.body;
     const userId = req.session.userId;
+
+    console.log(`Whatever : ${req.body.tags}`);
 
     if(!userId){
         return res.status(404).json({message:"User not found"});
@@ -29,6 +31,7 @@ exports.createNewContact = async(req,res)=>{
                 userId: userId,
                 name: name,
                 phone: phone,
+                tags:tags
             });
     
             console.log(`Contacts data: ${contacts}`);

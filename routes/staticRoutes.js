@@ -39,7 +39,7 @@ router.post('/register',createNewAccount);
 router.post('/login',loginUser);
 
 // logout of your account
-router.get('/logout',logout);
+router.get('/logout',isAuth,logout);
 
 
 /// <------- Contacts Routes --------------------> //////
@@ -48,7 +48,7 @@ router.get('/logout',logout);
 router.get('/view',isAuth,viewAllMyContacts);
 
 // create new account page
-router.post('/contacts/add_user', (req,res)=>{
+router.post('/contacts/add_user', isAuth,(req,res)=>{
     res.render("add_user",{title:"Add Users",body:"Add Users",error:''});
 });
 

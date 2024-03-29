@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
         integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css" rel="stylesheet" />
 
 </head>
 
@@ -30,7 +31,7 @@
             <% } %>
             </div>
             <div class="row">
-                <div class="col-lg-6 mx-auto mt-4">
+                <div class="col-lg-6  mx-auto mt-4">
                     <div class="card shadow">
                         <div class="card-header bg-primary">
                             <h3 class="text-light">Add New User</h3>
@@ -45,55 +46,33 @@
                                     <label for="phone">Phone</label>
                                     <input type="tel" name="phone" class="form-control form-control-lg" placeholder="Enter phone" required />
                                 </div>
-
-                                <!-- <div class="mb-3">
-
-                                    <label for="image" class="form-label">Select Image</label>
-
-                                    <input class="form-control form-control-lg" type="file" name="image" required />
-
-                                </div> -->
+                                    <div class="mb-3">
+                                        <div>
+                                            Select the tags for your contacts
+                                        </div>
+                                            <select class="js-example-tags" name="tags[]" multiple="multiple" style="width: 100%;">
+                                                    <!-- Add more options as needed -->
+                                            </select>
+                                     </div>
                                 <div class="mb-3 d-grid">
                                     <input type="submit" name="submit" value="Add User" class="btnbtn-primary btn-lg" />
                                 </div>
                             </form>
+
+                            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
+                        
+                            <script>
+                                $(document).ready(function() {
+                                    $('.js-example-tags').select2({
+                                        tags: true
+                                    });
+                                });
+                            </script>
                         </div>
                     </div>
                 </div>
             </div>
-
-
-            <script>
-                // Assign the token directly to a JavaScript variable
-                const token = '<%= global.whatever %>';
-                
-                // Function to submit form data via AJAX
-                $('#add-form').submit(function(event) {
-                    // Prevent the default form submission
-                    event.preventDefault();
-                
-                    // Get form data
-                    const formData = $(this).serializeArray();
-                
-                    // AJAX request to submit form data
-                    $.ajax({
-                        url: '/create_new_account',
-                        type: 'POST',
-                        data: formData,
-                        headers: {
-                            'Authorization': `Bearer ${token}` // Use the token variable here
-                        },
-                        success: function(response) {
-                            console.log(response);
-                            // Handle success response here
-                        },
-                        error: function(xhr, status, error) {
-                            console.error(error);
-                            // Handle error response here
-                        }
-                    });
-                });
-            </script>
 
 </body>
 

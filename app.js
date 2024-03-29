@@ -40,7 +40,7 @@ app.use(session({
     saveUninitialized:false, // don't create session until something stored
     store:store,
     cookie:{
-        maxAge:600000 // 600000 ms ---->>> 10 mins
+        maxAge:86400000 // 8,64,00,000 ms ---->>> 24 hours
     }
 }));
 

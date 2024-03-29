@@ -17,7 +17,7 @@
           <div class="info">
             <input class="email" type="name" placeholder="Name" id="name" name="name" required> <br>
             <input class="email" type="email" placeholder="Email" id="email" name="email" required> <br>
-            <input class="email" type="phone" placeholder="Phone" id="phone" name="phone" required> <br>
+            <input class="email" type="tel" placeholder="Phone" id="phone" name="phone" required> <br>
             <input class="email" type="password" placeholder="Password" id="password" name="password" required> <br>
           </div>
           <div class="btn">
@@ -31,6 +31,15 @@
       </div>
     </div>
   </header>
+
+  <script>
+    // Function to allow only numeric input for phone field
+    document.getElementById('phone').addEventListener('input', function(event) {
+        // Remove non-numeric characters from input value
+        this.value = this.value.replace(/\D/g, '');
+    });
+</script>
+
 </body>
 
 </html>
