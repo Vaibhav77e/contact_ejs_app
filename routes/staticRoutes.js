@@ -4,9 +4,9 @@ const Contacts = require('../models/ContactsModel/contacts_model');
 
 const User = require('../models/UserModel/user_model');
 const bcrypt = require('bcryptjs');
-
 const {viewAllMyContacts} = require('../controllers/ContactController/view_contact_controller');
 const isUserAuthenticated = require('../middlewares/isUserAuthenticated');
+const isAuth = require('../middlewares/isAuth');
 const sendToken = require('../utils/sendToken');
 
 
@@ -22,17 +22,17 @@ const sendToken = require('../utils/sendToken');
 /// <------------- Auth Routes ---------------------->
 
 
-router.get('/test',(req, res)=>{
-    res.render('test');
+router.get('/register',(req, res)=>{
+    res.render('register');
 });
 
-router.get('/secondtest',(req, res)=>{
-    res.render('secondtest');
+router.get('/login',(req, res)=>{
+    res.render('login');
 });
 
 
 // register or create new user
-router.post('/auth/createAccount',async(req, res)=>{
+router.post('/register',async(req, res)=>{
     try{
         const {name,email,phone,password} = req.body;
 
@@ -42,7 +42,8 @@ router.post('/auth/createAccount',async(req, res)=>{
             // return res.status(400).json({
             //     message:"User already exists.Please login different account or create one"
             // });
-            console.log("User already exists.Please login different account or create one")
+             console.log("User already exists.Please login different account or create one")
+             return res.redirect('/register');
         }
 
         const hashedPassword =await bcrypt.hash(password,10);
@@ -57,10 +58,10 @@ router.post('/auth/createAccount',async(req, res)=>{
 
         if(user===null){
             console.log("Couldn't create account");
-            return;
+            return res.redirect('/register');
         }
 
-        res.render('secondtest')
+       return res.redirect('/login')
     }catch(err){
         console.log(`Error whiling creating account: ${err.message}`)
     }
@@ -69,7 +70,7 @@ router.post('/auth/createAccount',async(req, res)=>{
 
 // login to the account
 
-router.post('/auth/login',async(req,res)=>{
+router.post('/login',async(req,res)=>{
     try{
         const {email,password} = req.body;
 
@@ -81,7 +82,7 @@ router.post('/auth/login',async(req,res)=>{
    
        if(user===null){
             console.log(`Email not found`);
-            return;
+            return res.redirect('/login');
         }
 
         const checkPassword = await user.comparePassword(password);
@@ -89,18 +90,14 @@ router.post('/auth/login',async(req,res)=>{
            return res.status(401).send('Incorrect email or password.');
         }
 
-        // console.log(req.session.userId);
-        // res.redirect('/index');
-
         req.session.userId = user.id;
 
         console.log(`user in login: ${req.session.userId}`);
 
-        let contacts = await Contacts.findById(req.session.userId);
+        // let contacts = await Contacts.findById(req.session.userId);
+        // res.render('index',{contacts:contacts});
 
-        res.render('index',{contacts:contacts});
-
-        //sendToken(user,200,req,res);
+        res.redirect('/view');
 
     }catch(e){
         console.log(`Error whiling logging into your account : ${e.message}`);
@@ -109,10 +106,19 @@ router.post('/auth/login',async(req,res)=>{
 });
 
 
+router.get('/logout', (req,res)=>{
+    req.session.destroy((err)=>{
+        if(err) throw err;
+        res.redirect('/login');
+    });
+});
+
+
 /// <------- Contacts Routes --------------------> //////
 
+
 // get the all contacts
-router.get('/',viewAllMyContacts);
+router.get('/view',isAuth,viewAllMyContacts);
 
 // create new account page
 router.post('/contacts/add_user', (req,res)=>{
@@ -121,15 +127,12 @@ router.post('/contacts/add_user', (req,res)=>{
 
 
 // create new account api
-router.post('/create_new_account',
-isUserAuthenticated,
-async(req,res)=>{
-    console.log(`Waked :${req.body}`);
+router.post('/create_new_account',isAuth,async(req,res)=>{
     const {name,phone} = req.body;
 
     console.log(`name : ${name} and  ${phone}`);
 
-    const userId = req.user.id;
+    const userId = req.session.userId;
 
     console.log(`userId : ${userId}`);
 
@@ -137,22 +140,33 @@ async(req,res)=>{
         return res.status(404).json({message:"User not found"});
     }
     try{
-       // let contact = await Contacts.find({userId: userId});
-       let contacts = await Contacts.create({
-           userId: userId,
-           name:name,
-           phone:phone,
+        let contacts = await Contacts.find({userId:userId});
+
+        let contactExists = false;
+
+        contacts.forEach(contact => {
+            if (contact.name === name) {
+                contactExists = true;
+                 return res.status(400).json({ message: "Contact with this name is already saved to your account" });
+            } else if (contact.phone === phone) {
+                contactExists = true;
+                return res.status(400).json({ message: "This contact number is already added to your account" });
+            }
         });
-        console.log(`Contacts daa : ${contacts}`);
-        if(!contacts){
-            return res.status(404).json({message:"Couldn't create contact,something went wrong"});
+
+        if (!contactExists) {
+            contacts = await Contacts.create({
+                userId: userId,
+                name: name,
+                phone: phone,
+            });
+    
+            console.log(`Contacts data: ${contacts}`);
+            if (!contacts) {
+                return res.status(404).json({ message: "Couldn't create contact, something went wrong" });
+            }
+         res.redirect('/view');
         }
-
-        contacts = await Contacts.findBy(userId);
-
-        console.log(`Contacts : ${contacts}`);
-
-        res.render("index",{contacts: contacts});
 
     }catch(err){
         return res.status(500).json({message: err.message});
@@ -166,99 +180,78 @@ router.get('/edit/:id',
     let id = req.params.id;
     Contacts.findById(id).then(contacts=>{
         if(contacts===null){
-            res.redirect('/');
+            res.redirect('/view');
         }else{
             res.render('edit_user',{
                 contacts:contacts,
             });
         }
     }).catch(err=>{
-            res.redirect('/');
+            res.redirect('/view');
     });
 });
 
 // update route
 
-router.post('/update/:id',(req,res)=>{
-    let id = req.params.id;
+router.post('/update/:id',isAuth,async(req,res)=>{
+    const {name,phone} = req.body;
+    try{
 
-    Contacts.findByIdAndUpdate(id,{
-        name:req.body.name,
-        phone:req.body.phone
-    }).then(result=>{
-        res.redirect('/');
-    }).catch(err=>{
-        console.log(`Error while updating the record : ${err.message}`);
-    });
+        let id = req.session.userId;
+        const getContactsBasedOnUserId = {
+            userId:id,
+        }
+
+        let contacts = await Contacts.find(getContactsBasedOnUserId);
+        let contactExists = false;
+
+        contacts.forEach(contact => {
+            if (contact.name === name) {
+                contactExists = true;
+                    return res.status(400).json({ message: "Contact with this same name is already present in your account" });
+            } else if (contact.phone === phone) {
+                contactExists = true;
+                return res.status(400).json({ message: "Same contact number is already saved in your account" });
+            }
+        });
+
+        if (!contactExists) {
+            contacts = await Contacts.findOneAndUpdate(
+            getContactsBasedOnUserId,
+            {
+                name:name,
+                phone:phone
+            });
+
+            console.log(`Contacts data: ${contacts}`);
+            if (!contacts) {
+                return res.status(404).json({ message: "Couldn't create contact, something went wrong" });
+            }
+            res.redirect('/view');
+        }
+    
+    }catch(err){
+        return res.status(500).json({message:err.message});
+    }
 
 });
 
 // delete route
-
 router.get('/delete/:id',
-   
+    isAuth,
     (req,res)=>{
-    let id = req.params.id;
+    let id = req.session.userId;
 
-    // try{
-    //     let contacts = Contacts.findByIdAndDelete(id);
-    //     res.render("index",{token:req.token,contacts: contacts});
-    // }catch(err){
-    //     console.log(`Error while deleting the users ${err.message}`);
-    // }
-
-    Contacts.findByIdAndDelete(id).then(_ =>{
-        res.redirect('/');
+    Contacts.findOneAndDelete({userId:id}).then(_ =>{
+        res.redirect('/view');
     }).catch(err=>{
         console.log(`Error while deleting the users ${err.message}`);
     });
 });
 
+//landing page
+router.get('/',(req,res)=>{
+    res.render('landing');
+});
 
 module.exports = router;
-
-
-/**
- *  working but expected
- <script>
-                // Example function to get token from local storage
-                function getToken() {
-                    return JSON.parse(localStorage.getItem("data"));
-                }
-
-                // Function to submit form data via AJAX
-                $('#add-form').submit(function(event) {
-                    // Prevent the default form submission
-                    event.preventDefault();
-
-                    // Get form data
-                    const formData = $(this).serializeArray();
-
-                    // AJAX request to submit form data
-                    $.ajax({
-                        url: '/create_new_account',
-                        type: 'POST',
-                        data: formData,
-                        headers: {
-                            'Authorization': `Bearer ${getToken()}`
-                        },
-                        success: function(response) {
-                            console.log(response);
-                            // Handle success response here
-                        },
-                        error: function(xhr, status, error) {
-                            console.error(error);
-                            // Handle error response here
-                        }
-                    });
-                });
-            </script>
-
-
- setting token
-
-    <script>
-        var data = JSON.parse('<%- JSON.stringify(token) %>');
-        localStorage.setItem("data", data);
-    </script>
- */

@@ -2,12 +2,15 @@ const express = require('express');
 const app = express();
 const dotenv = require('dotenv');
 const path = require('path');
-const cookieParser = require('cookie-parser');
+// const cookieParser = require('cookie-parser');
 const csrf = require('csurf');
+
 const csrfProtection = csrf({cookie: true});
 const isUserAuthenticated = require('./middlewares/isUserAuthenticated');
+const isAuth = require('./middlewares/isAuth');
 
 const session = require('express-session');
+const MongoDBSession = require('connect-mongodb-session')(session);
 
 
 // import the routes
@@ -24,7 +27,7 @@ const databaseConnect = require('./database/database');
 const PORT = process.env.PORT || 5000;
 
 // convert the data into json format
-app.use(cookieParser({debug:true}));
+// app.use(cookieParser({debug:true}));
 app.use(express.json());
 app.use(express.urlencoded());
 
@@ -42,15 +45,18 @@ app.use(express.urlencoded());
 // call the function that invokes database function
 databaseConnect();
 
+// set up mongodb session connect for storing the sessions
+
+const store = new MongoDBSession({
+    uri:process.env.DB_URL,
+    collection:"mySessionsForContacts",
+});
 
 app.use(session({
-    secret: 'testing-re-testing',
-    resave: false,
-    saveUninitialized: true,
-    cookie: { 
-    secure: true,
-    maxAge:3600000,
- }
+    secret:"secret-key-whatever",
+    resave:false,
+    saveUninitialized:false,
+    store:store
 }));
 
 
