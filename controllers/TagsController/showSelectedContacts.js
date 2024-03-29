@@ -19,7 +19,7 @@ exports.getContactsBasedOnSelection = async (req, res, next) => {
         filterContacts = await Contacts.find({ userId: userId });
 
         // Return the filtered contacts
-        return res.render('alltags/showTags',{contacts:contacts});
+        return res.render('alltags/showTags',{contacts:contacts,filterContacts:filterContacts});
     } catch (err) {
         console.log(`Error: ${err.message}`);
         res.status(500).json({ error: 'Internal Server Error' });

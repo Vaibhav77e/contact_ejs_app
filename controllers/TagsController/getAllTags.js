@@ -7,7 +7,9 @@ exports.getAllTags = async (req, res, next) => {
 
         console.log(contacts);
 
-        return res.render('alltags/showTags',{contacts:contacts});
+        filterContacts=contacts
+
+        return res.render('alltags/showTags',{contacts:contacts,filterContacts:filterContacts});
     }catch(err){
         return res.status(500).json({
             message: err.message

@@ -50,7 +50,7 @@
         <div class="col-lg-12">
             <div class="d-flex flex-wrap">
 
-                <% contacts.forEach(function(contact) { %>
+                <% filterContacts.forEach(function(contact) { %>
                     <% contact.tags.forEach(function(tag) { %>
                         <form action="/getContactBySelection" method="POST">
                             <!-- Use a hidden input field to store the selected tag value -->
@@ -65,7 +65,6 @@
         </div>
     </div>
 </div>
-
 
 
     <div class="row my-4">
@@ -104,6 +103,28 @@
         </div>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-K+1n7v3O5NhvNUv3C2ZpL0MpePbz5T/Bu5u8AOz5fAk=" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function() {
+        $('.tag-button').click(function() {
+            // Remove 'btn-primary' class from all filter buttons
+            $('.tag-button').removeClass('btn-primary');
+            // Add 'btn-primary' class to the clicked filter button
+            $(this).addClass('btn-primary');
+        });
+    });
+</script>
+
+
+
+<style>
+    /* Define the styles for the selected filter button */
+    .selected {
+        background-color: green; /* Change to the desired color */
+        color: white; /* Change to the desired text color */
+    }
+</style>
 
 </body>
 </html>
