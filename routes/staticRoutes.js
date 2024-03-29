@@ -195,6 +195,7 @@ router.get('/edit/:id',
 
 router.post('/update/:id',isAuth,async(req,res)=>{
     const {name,phone} = req.body;
+    const editId = req.params.id;
     try{
 
         let id = req.session.userId;
@@ -206,13 +207,17 @@ router.post('/update/:id',isAuth,async(req,res)=>{
         let contactExists = false;
 
         contacts.forEach(contact => {
+        // first check whether the id which is passed same as contact.id if the ids are same in that case allow user to edit the contact
+           if(editId!==contact.id){
+        // after checking if the id's are not same then allow user to edit the contact but the name and phone number should match present in the DB
             if (contact.name === name) {
                 contactExists = true;
-                    return res.status(400).json({ message: "Contact with this same name is already present in your account" });
+                return res.status(400).json({ message: "Contact with this same name is already present in your account" });
             } else if (contact.phone === phone) {
                 contactExists = true;
                 return res.status(400).json({ message: "Same contact number is already saved in your account" });
             }
+           }
         });
 
         if (!contactExists) {
@@ -242,7 +247,10 @@ router.get('/delete/:id',
     (req,res)=>{
     let id = req.session.userId;
 
-    Contacts.findOneAndDelete({userId:id}).then(_ =>{
+    let getDeleteId = req.params.id;
+
+    // to delete the contact take the id from params and delete it
+    Contacts.findByIdAndDelete(getDeleteId).then(_ =>{
         res.redirect('/view');
     }).catch(err=>{
         console.log(`Error while deleting the users ${err.message}`);

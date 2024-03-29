@@ -3,8 +3,6 @@ const Contact = require('../../models/ContactsModel/contacts_model');
 exports.viewAllMyContacts = async (req, res,next) => {
     try {
         console.log('Getting users');
-        console.log(`Get the Stupid sessions : ${req.session}`);
-        console.log(`Get the Stupid sessions again : ${req.session.id}`);
         const userId = req.session.userId;
         res.locals.test = req.session.id;
         const contacts = await Contact.find({userId: userId});
