@@ -2,25 +2,23 @@ const express = require('express');
 const router = express.Router();
 const Contacts = require('../models/ContactsModel/contacts_model');
 
-const User = require('../models/UserModel/user_model');
-const bcrypt = require('bcryptjs');
+/// << ------------------ Auth Controllers imports ----------------------------------->>>
+
+const {createNewAccount} = require('../controllers/AuthControllers/create_new_account');
+const {loginUser} = require('../controllers/AuthControllers/login_to_account');
+const {logout} = require('../controllers/AuthControllers/logout');
+
+/// << ------------------ Contact Controllers imports ----------------------------------->>>
+
 const {viewAllMyContacts} = require('../controllers/ContactController/view_contact_controller');
-const isUserAuthenticated = require('../middlewares/isUserAuthenticated');
+const {createNewContact} = require('../controllers/ContactController/create_contact_controllers');
+const {updateContacts} = require('../controllers/ContactController/update_contact_controller');
+const {deleteContact} = require('../controllers/ContactController/delete_contact_controllers');
+
+//// <<< ------------------- middleware ----------------------->>>>
 const isAuth = require('../middlewares/isAuth');
-const sendToken = require('../utils/sendToken');
-
-
-
-// router.get('/',(req,res)=>{
-//     res.render("index",{title:"Nation pride",body:"India the great"});
-// });
-
-// added to check whether the data will load or not working fine now
-// router.get('/view_contacts', viewAllMyContacts);
-
 
 /// <------------- Auth Routes ---------------------->
-
 
 router.get('/register',(req, res)=>{
     res.render('register');
@@ -30,88 +28,14 @@ router.get('/login',(req, res)=>{
     res.render('login');
 });
 
+// register or create new account
+router.post('/register',createNewAccount);
 
-// register or create new user
-router.post('/register',async(req, res)=>{
-    try{
-        const {name,email,phone,password} = req.body;
+// login to your account
+router.post('/login',loginUser);
 
-        let user = await User.find({email:email});
-
-        if(!user){
-            // return res.status(400).json({
-            //     message:"User already exists.Please login different account or create one"
-            // });
-             console.log("User already exists.Please login different account or create one")
-             return res.redirect('/register');
-        }
-
-        const hashedPassword =await bcrypt.hash(password,10);
-        // const hashedPassword = password;
-
-        user = await User.create({
-        name:name,
-        email:email,
-        phone:phone,
-        password:hashedPassword,
-        });
-
-        if(user===null){
-            console.log("Couldn't create account");
-            return res.redirect('/register');
-        }
-
-       return res.redirect('/login')
-    }catch(err){
-        console.log(`Error whiling creating account: ${err.message}`)
-    }
-});
-
-
-// login to the account
-
-router.post('/login',async(req,res)=>{
-    try{
-        const {email,password} = req.body;
-
-        console.log(`data : ${req.body.email}`)
-
-        let user = await User.findOne({email: email}).select('+password');
-
-        console.log(`user : ${user}`);
-   
-       if(user===null){
-            console.log(`Email not found`);
-            return res.redirect('/login');
-        }
-
-        const checkPassword = await user.comparePassword(password);
-        if(!checkPassword){
-           return res.status(401).send('Incorrect email or password.');
-        }
-
-        req.session.userId = user.id;
-
-        console.log(`user in login: ${req.session.userId}`);
-
-        // let contacts = await Contacts.findById(req.session.userId);
-        // res.render('index',{contacts:contacts});
-
-        res.redirect('/view');
-
-    }catch(e){
-        console.log(`Error whiling logging into your account : ${e.message}`);
-        return;
-    }
-});
-
-
-router.get('/logout', (req,res)=>{
-    req.session.destroy((err)=>{
-        if(err) throw err;
-        res.redirect('/login');
-    });
-});
+// logout of yout account
+router.get('/logout',logout);
 
 
 /// <------- Contacts Routes --------------------> //////
@@ -127,52 +51,7 @@ router.post('/contacts/add_user', (req,res)=>{
 
 
 // create new account api
-router.post('/create_new_account',isAuth,async(req,res)=>{
-    const {name,phone} = req.body;
-
-    console.log(`name : ${name} and  ${phone}`);
-
-    const userId = req.session.userId;
-
-    console.log(`userId : ${userId}`);
-
-    if(!userId){
-        return res.status(404).json({message:"User not found"});
-    }
-    try{
-        let contacts = await Contacts.find({userId:userId});
-
-        let contactExists = false;
-
-        contacts.forEach(contact => {
-            if (contact.name === name) {
-                contactExists = true;
-                 return res.status(400).json({ message: "Contact with this name is already saved to your account" });
-            } else if (contact.phone === phone) {
-                contactExists = true;
-                return res.status(400).json({ message: "This contact number is already added to your account" });
-            }
-        });
-
-        if (!contactExists) {
-            contacts = await Contacts.create({
-                userId: userId,
-                name: name,
-                phone: phone,
-            });
-    
-            console.log(`Contacts data: ${contacts}`);
-            if (!contacts) {
-                return res.status(404).json({ message: "Couldn't create contact, something went wrong" });
-            }
-         res.redirect('/view');
-        }
-
-    }catch(err){
-        return res.status(500).json({message: err.message});
-    }
-}
-);
+router.post('/create_new_account',isAuth,createNewContact);
 
 // edit route
 router.get('/edit/:id',
@@ -193,69 +72,10 @@ router.get('/edit/:id',
 
 // update route
 
-router.post('/update/:id',isAuth,async(req,res)=>{
-    const {name,phone} = req.body;
-    const editId = req.params.id;
-    try{
-
-        let id = req.session.userId;
-        const getContactsBasedOnUserId = {
-            userId:id,
-        }
-
-        let contacts = await Contacts.find(getContactsBasedOnUserId);
-        let contactExists = false;
-
-        contacts.forEach(contact => {
-        // first check whether the id which is passed same as contact.id if the ids are same in that case allow user to edit the contact
-           if(editId!==contact.id){
-        // after checking if the id's are not same then allow user to edit the contact but the name and phone number should match present in the DB
-            if (contact.name === name) {
-                contactExists = true;
-                return res.status(400).json({ message: "Contact with this same name is already present in your account" });
-            } else if (contact.phone === phone) {
-                contactExists = true;
-                return res.status(400).json({ message: "Same contact number is already saved in your account" });
-            }
-           }
-        });
-
-        if (!contactExists) {
-            contacts = await Contacts.findOneAndUpdate(
-            getContactsBasedOnUserId,
-            {
-                name:name,
-                phone:phone
-            });
-
-            console.log(`Contacts data: ${contacts}`);
-            if (!contacts) {
-                return res.status(404).json({ message: "Couldn't create contact, something went wrong" });
-            }
-            res.redirect('/view');
-        }
-    
-    }catch(err){
-        return res.status(500).json({message:err.message});
-    }
-
-});
+router.post('/update/:id',isAuth,updateContacts);
 
 // delete route
-router.get('/delete/:id',
-    isAuth,
-    (req,res)=>{
-    let id = req.session.userId;
-
-    let getDeleteId = req.params.id;
-
-    // to delete the contact take the id from params and delete it
-    Contacts.findByIdAndDelete(getDeleteId).then(_ =>{
-        res.redirect('/view');
-    }).catch(err=>{
-        console.log(`Error while deleting the users ${err.message}`);
-    });
-});
+router.get('/delete/:id',isAuth,deleteContact);
 
 //landing page
 router.get('/',(req,res)=>{

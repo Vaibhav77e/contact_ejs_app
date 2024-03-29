@@ -1,22 +1,14 @@
-const Contact = require('../../models/contacts/contacts_models');
+const Contacts = require('../../models/ContactsModel/contacts_model');
 
-exports.deleteContact = async (req, res) => {
+exports.deleteContact = (req,res)=>{
+    let id = req.session.userId;
 
-    try{
-        var userID = req.body.id;
-        const {name,phone} = req.body;
-        let contacts = await Contact.findByIdAndDelete({userId: userID},
-            {name:name,phone:phone},
-            {new:true});
+    let getDeleteId = req.params.id;
 
-        if(!contacts){
-            return res.status(404).json({message:"Couldn't update the contact"});
-        }
-
-        res.render('index',{contacts: contacts});
-    }catch(err){
-        res.status(500).json({
-            err:err.message
-        });
-    }
+    // to delete the contact take the id from params and delete it
+    Contacts.findByIdAndDelete(getDeleteId).then(_ =>{
+        res.redirect('/view');
+    }).catch(err=>{
+        console.log(`Error while deleting the users ${err.message}`);
+    });
 }

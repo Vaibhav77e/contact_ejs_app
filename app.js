@@ -5,9 +5,6 @@ const path = require('path');
 // const cookieParser = require('cookie-parser');
 const csrf = require('csurf');
 
-const csrfProtection = csrf({cookie: true});
-const isUserAuthenticated = require('./middlewares/isUserAuthenticated');
-const isAuth = require('./middlewares/isAuth');
 
 const session = require('express-session');
 const MongoDBSession = require('connect-mongodb-session')(session);
@@ -66,9 +63,9 @@ app.set("views",path.resolve("./views"));
 
 // setup the routes for the application
 
-app.use('/api/v1',authRoutes);
 app.use('/',staticRoute);
-app.use('/contacts',contactRoutes);
+// app.use('/api/v1',authRoutes);
+// app.use('/contacts',contactRoutes);
 
 
 app.listen(PORT,()=>{

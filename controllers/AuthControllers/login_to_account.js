@@ -1,40 +1,32 @@
 const User = require('../../models/UserModel/user_model');
-const sendToken = require('../../utils/sendToken');
+const bcrypt = require('bcryptjs');
 
-exports.loginUser = async(req, res, next) => {
-        const contacts =[];
-        try{
-            const {email,password} = req.body;
+exports.loginUser = async(req,res)=>{
+    try{
+        const {email,password} = req.body;
 
-            if(email.length<0 || password.length<0){
-                return res.status(400).json({
-                    message : "Please provide required fields"
-                });
-            }
-
-            let user = await User.findOne({email: email}).select('+password');
-    
-        if(user===null){
-            return  res.status(400).json({
-                message : "Email not found"
-            });
-            }
-
-            const checkPassword = await user.comparePassword(password);
-            if(!checkPassword){
-                return res.status(400).json({
-                    message : "Password doesn't match"
-                });
-            }
-
-            // const token = await user.generateAuthTokens()
-            // res.cookie('token', token, {httpOnly: true})
-            // res.render('index',{contacts:contacts})
-
-
-            //sendToken(user,200,res);
-
-        }catch(e){
-            return res.status(500).json({message:e.message})
+        let user = await User.findOne({email: email}).select('+password');
+       if(user===null){
+            console.log(`Email not found`);
+            return res.redirect('/login');
         }
+
+        const checkPassword = await user.comparePassword(password);
+        if(!checkPassword){
+           return res.status(401).send('Incorrect email or password.');
+        }
+
+        req.session.userId = user.id;
+
+        console.log(`user in login: ${req.session.userId}`);
+
+        // let contacts = await Contacts.findById(req.session.userId);
+        // res.render('index',{contacts:contacts});
+
+        res.redirect('/view');
+
+    }catch(e){
+        console.log(`Error whiling logging into your account : ${e.message}`);
+        return;
+    }
 }
