@@ -18,6 +18,7 @@
 </head>
 <body>
 
+
 <nav class="navbar bg-primary" data-bs-theme="dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">Contact-App</a>
@@ -66,8 +67,9 @@
 </div>
 
 
-    <div class="row my-4">
-            <div class="col-lg-12">
+    <div class="row my-6">
+        <div class="col-lg-12">
+            <div class="table-container p-4">
                 <div class="table-responsive">
                     <table class="table table-striped">
                         <thead>
@@ -100,7 +102,9 @@
                     </table>
                 </div>
             </div>
+            
         </div>
+    </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-K+1n7v3O5NhvNUv3C2ZpL0MpePbz5T/Bu5u8AOz5fAk=" crossorigin="anonymous"></script>
 <script>
@@ -113,6 +117,24 @@
         });
     });
 </script>
+
+
+<!-- <script>
+    function getContactsBySelection(tag) {
+        const apiUrl = 'http://localhost:3001/getContactBySelection';
+
+        fetch(apiUrl, {
+            method: "POST",
+            body: JSON.stringify({
+                tag:tag
+            }),
+            headers: {
+              "Content-type": "application/json; charset=UTF-8"
+            }
+          });
+    }
+</script> -->
+
 
 
 

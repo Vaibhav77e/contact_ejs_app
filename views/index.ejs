@@ -98,5 +98,11 @@ crossorigin="anonymous" referrerpolicy="no-referrer">
     </div>
 </div>
 
+<script>
+    if (contacts.userId !== undefined || contacts.userId !== null) {
+        history.replaceState(null, '', '/view');
+    }
+</script>
+
 </body>
 </html>
