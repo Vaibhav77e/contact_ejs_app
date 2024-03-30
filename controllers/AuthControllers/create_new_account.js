@@ -6,6 +6,29 @@ exports.createNewAccount = async(req, res)=>{
     try{
         const {name,email,phone,password} = req.body;
 
+        var emailRegex = /^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+/;
+        if (!emailRegex.test(email)) {
+          return;
+        }
+
+        // Regular expression to match only numeric characters
+        let numericRegex = /^[0-9]+$/;
+
+        let isNumeric = numericRegex.test(phone);
+
+        console.log(`Check Number : ${isNumeric}`);
+
+        if(isNumeric===false){
+            return;
+            return res.render("signin",{title:"Add Users",body:"Add Users",error:'Please provide correct format of number'});
+        }
+
+        if(phone.length>10||phone.length<10){
+            return;
+            return res.render("signin",{title:"Add Users",body:"Add Users",error:'Number must be at 10 digits can\'t be more or less that'});
+        }
+
+
         let user = await User.find({email:email});
 
         if(!user){

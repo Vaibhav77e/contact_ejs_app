@@ -1,19 +1,26 @@
 const User = require('../../models/UserModel/user_model');
 const bcrypt = require('bcryptjs');
 
-exports.loginUser = async(req,res)=>{
-    try{
-        const {email,password} = req.body;
+exports.loginUser = async (req, res) => {
+    try {
+        const { email, password } = req.body;
 
-        let user = await User.findOne({email: email}).select('+password');
-       if(user===null){
+        var emailRegex = /^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+/;
+        if (!emailRegex.test(email)) {
+            return res.render('login', { error: 'Invalid Email Format' });
+        }
+
+        let user = await User.findOne({ email: email }).select('+password');
+        if (user === null) {
             console.log(`Email not found`);
-            return res.redirect('/login');
+            return res.render('login', { error: 'Email not found' });
         }
 
         const checkPassword = await user.comparePassword(password);
-        if(!checkPassword){
-           return res.status(401).send('Incorrect email or password.');
+        if (!checkPassword) {
+            console.log('Incorrect email or password');
+            return res.render('login', { error: 'Incorrect password, please check the provided password' });
+            // return res.status(401).send('Incorrect email or password.');
         }
 
         req.session.userId = user.id;
@@ -25,8 +32,8 @@ exports.loginUser = async(req,res)=>{
 
         res.redirect('/view');
 
-    }catch(e){
-        console.log(`Error whiling logging into your account : ${e.message}`);
+    } catch (e) {
+        console.log(`Error while logging into your account: ${e.message}`);
         return;
     }
 }

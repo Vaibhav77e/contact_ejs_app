@@ -18,11 +18,13 @@ exports.createNewContact = async(req,res)=>{
         console.log(`Check Number : ${isNumeric}`);
 
         if(isNumeric===false){
-            return res.render("add_user",{title:"Add Users",body:"Add Users",error:'Please provide correct format of number'});
+            return;
+          //  return res.render("add_user",{title:"Add Users",body:"Add Users",error:'Please provide correct format of number'});
         }
 
         if(phone.length>10||phone.length<10){
-            return res.render("add_user",{title:"Add Users",body:"Add Users",error:'Number must be at 10 digits can\'t be more or less that'});
+            return;
+           // return res.render("add_user",{title:"Add Users",body:"Add Users",error:'Number must be at 10 digits can\'t be more or less that'});
         }
 
         let contacts = await Contacts.find({userId:userId});

@@ -4,23 +4,30 @@
 <%- include('styles/styles') %>
 
 <body>
+  
+    <!-- Error message container -->
+    <div id="error-modal" class="modal" style="display: none;">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <p id="modal-message"></p>
+      </div>
+    </div>
+    
   <header class="showcase">
     <div class="showcase-content">
       <div class="showcase-top">
         <h1>LOGIN</h1>
       </div>
       <div class="formm">
-        <form method="POST" action="/login">
+        <form method="POST" action="/login" onsubmit="return validateForm()">
           <h2>Welcome user!</h2>
           <div class="info">
-            <input class="email" type="email" placeholder="Email" id="email" name="email"> <br>
-            <input class="email" type="password" placeholder="Password" id="password" name="password"> <br>
+            <input class="email" type="email" placeholder="Email" id="email" name="email" required> <br>
+            <input class="email" type="password" placeholder="Password" id="password" name="password" required> <br>
           </div>
           <div class="btn">
             <button class="btn-primary" type="submit">Log In</button>
           </div>
-
-          <div id="error-message" class="error-message" style="display: none;">Incorrect email or password.</div>
 
           </div>
           <div class="signup">
@@ -31,6 +38,49 @@
       </div>
     </div>
   </header>
+
+  <script>
+    function validateForm() {
+      // Get form input values
+      var email = document.getElementById('email').value;
+      var password = document.getElementById('password').value;
+
+      // Reset previous error messages
+      document.getElementById('error-message').innerText = '';
+      
+      // Check email format
+      var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        displayModal('Invalid email format.');
+        return false;
+      }
+
+      // If all validations pass, return true to submit the form
+      return true;
+    }
+
+    // Function to display modal
+    function displayModal(message) {
+      var modal = document.getElementById('error-modal');
+      var modalMessage = document.getElementById('modal-message');
+      modalMessage.innerHTML = message;
+      modal.style.display = 'block';
+    }
+
+    // Function to close modal
+    function closeModal() {
+      var modal = document.getElementById('error-modal');
+      modal.style.display = 'none';
+    }
+  </script>
+
+  <!-- Display error message from server-side -->
+  <% if (error) { %>
+    <script>
+      displayModal('<%= error %>');
+    </script>
+  <% } %>
+
 </body>
 
 </html>

@@ -3,7 +3,6 @@
 
 <%- include('styles/styles') %>
 
-
 <body>
   <header class="showcase">
     <div class="showcase-content">
@@ -11,13 +10,16 @@
         <h1>REGISTER</h1>
       </div>
       <div class="formm">
-        <form method="POST" action="/register">
+        <form id="registrationForm" method="POST" action="/register" onsubmit="return validateForm()">
           <h2>Create new account
           </h2>
           <div class="info">
-            <input class="email" type="name" placeholder="Name" id="name" name="name" required> <br>
+            <input class="email" type="text" placeholder="Name" id="name" name="name" required> <br>
+            <span id="nameError" class="error"></span><br> <!-- Error message for name -->
             <input class="email" type="email" placeholder="Email" id="email" name="email" required> <br>
+            <span id="emailError" class="error"></span><br> <!-- Error message for email -->
             <input class="email" type="tel" placeholder="Phone" id="phone" name="phone" required> <br>
+            <span id="phoneError" class="error"></span><br> <!-- Error message for phone -->
             <input class="email" type="password" placeholder="Password" id="password" name="password" required> <br>
           </div>
           <div class="btn">
@@ -33,12 +35,47 @@
   </header>
 
   <script>
+    function validateForm() {
+      // Get form input values
+      var name = document.getElementById('name').value;
+      var email = document.getElementById('email').value;
+      var phone = document.getElementById('phone').value;
+      var password = document.getElementById('password').value;
+      
+      // Reset previous error messages
+      document.getElementById('nameError').innerText = '';
+      document.getElementById('emailError').innerText = '';
+      document.getElementById('phoneError').innerText = '';
+
+      // Check phone number length
+      if (phone.length < 10) {
+        document.getElementById('phoneError').innerText = 'Phone number must be 10 digits long.';
+        return false;
+      }
+
+      // Check phone number length
+      if (phone.length > 10) {
+        document.getElementById('phoneError').innerText = 'Phone number must be 10 digits long not more than that';
+        return false;
+      }
+
+      // Check email format
+      var emailRegex = /^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+/;
+      if (!emailRegex.test(email)) {
+        document.getElementById('emailError').innerText = 'Invalid email format.';
+        return false;
+      }
+
+      // If all validations pass, return true to submit the form
+      return true;
+    }
+
     // Function to allow only numeric input for phone field
     document.getElementById('phone').addEventListener('input', function(event) {
-        // Remove non-numeric characters from input value
-        this.value = this.value.replace(/\D/g, '');
+      // Remove non-numeric characters from input value
+      this.value = this.value.replace(/\D/g, '');
     });
-</script>
+  </script>
 
 </body>
 
