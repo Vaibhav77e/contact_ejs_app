@@ -18,6 +18,8 @@ exports.createNewAccount = async(req, res)=>{
 
         console.log(`Check Number : ${isNumeric}`);
 
+        console.log(`Password : ${password}`);
+
         if(isNumeric===false){
             return;
             return res.render("signin",{title:"Add Users",body:"Add Users",error:'Please provide correct format of number'});

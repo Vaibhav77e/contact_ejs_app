@@ -30,7 +30,10 @@ exports.loginUser = async (req, res) => {
         // let contacts = await Contacts.findById(req.session.userId);
         // res.render('index',{contacts:contacts});
 
-        res.redirect('/view');
+         res.redirect('/view');
+         
+         console.log(`Check after the user logged in`);
+         return;
 
     } catch (e) {
         console.log(`Error while logging into your account: ${e.message}`);

@@ -6,12 +6,7 @@
 <body>
   
     <!-- Error message container -->
-    <div id="error-modal" class="modal" style="display: none;">
-      <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <p id="modal-message"></p>
-      </div>
-    </div>
+   
     
   <header class="showcase">
     <div class="showcase-content">
@@ -21,12 +16,18 @@
       <div class="formm">
         <form method="POST" action="/login" onsubmit="return validateForm()">
           <h2>Welcome user!</h2>
-          <div class="info">
-            <input class="email" type="email" placeholder="Email" id="email" name="email" required> <br>
+          <div class="info my-3">
+            <input class="email my-2" type="email" placeholder="Email" id="email" name="email" required> <br>
             <input class="email" type="password" placeholder="Password" id="password" name="password" required> <br>
           </div>
           <div class="btn">
             <button class="btn-primary" type="submit">Log In</button>
+          </div>
+          <div id="error-modal" class="modal" style="display: none;">
+            <div class="modal-content">
+              <span class="close" onclick="closeModal()">&times;</span>
+              <p id="modal-message"></p>
+            </div>
           </div>
 
           </div>

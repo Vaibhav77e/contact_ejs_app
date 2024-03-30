@@ -37,14 +37,15 @@
                             <h3 class="text-light">Add New User</h3>
                         </div>
                         <div class="card-body p-4">
-                            <form action="/create_new_account" method="POST" id="add-form" enctype="application/json">
+                            <form action="/create_new_account" method="POST" id="add-form" enctype="application/json" onsubmit="return validateForm()">
                                 <div class="mb-3">
                                     <label for="name">Name</label>
                                     <input type="text" name="name" class="form-control form-control-lg" placeholder="Enter name" required />
                                 </div>
                                 <div class="mb-3">
                                     <label for="phone">Phone</label>
-                                    <input type="tel" name="phone" class="form-control form-control-lg" placeholder="Enter phone" required />
+                                    <input type="tel" name="phone" class="form-control form-control-lg" placeholder="Enter phone" id="phone" maxlength="10" required />
+                                    <span class="text-danger" id="phoneError" class="error"></span><br>
                                 </div>
                                     <div class="mb-3">
                                         <div>
@@ -55,13 +56,13 @@
                                             </select>
                                      </div>
                                 <div class="mb-3 d-grid">
-                                    <input type="submit" name="submit" value="Add User" class="btnbtn-primary btn-lg" />
+                                    <input type="submit" name="submit" value="Add User" class="btnbtn-primary btn-lg" onclick="return validateForm()" />
                                 </div>
                             </form>
 
                             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                             <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
-                        
+
                             <script>
                                 $(document).ready(function() {
                                     $('.js-example-tags').select2({
@@ -73,6 +74,34 @@
                     </div>
                 </div>
             </div>
+
+            <script>
+                function validateForm() {
+                  var phone = document.getElementById('phone').value;
+                  // Reset previous error messages
+                  document.getElementById('phoneError').innerText = '';
+            
+                  // Check phone number length
+                  if (phone.length < 10) {
+                    document.getElementById('phoneError').innerText = 'Phone number must be 10 digits long.';
+                    return false;
+                  }
+            
+                  // Check phone number length
+                  if (phone.length > 10) {
+                    document.getElementById('phoneError').innerText = 'Phone number must be 10 digits long not more than that';
+                    return false;
+                  }
+                  // If all validations pass, return true to submit the form
+                  return true;
+                }
+            
+                // Function to allow only numeric input for phone field
+                document.getElementById('phone').addEventListener('input', function(event) {
+                  // Remove non-numeric characters from input value
+                  this.value = this.value.replace(/\D/g, '');
+                });
+              </script>
 
 </body>
 

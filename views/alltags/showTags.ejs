@@ -49,7 +49,6 @@
     <div class="row my-4">
         <div class="col-lg-12">
             <div class="d-flex flex-wrap">
-
                 <% filterContacts.forEach(function(contact) { %>
                     <% contact.tags.forEach(function(tag) { %>
                         <form action="/getContactBySelection" method="POST">
@@ -57,7 +56,7 @@
                             <input type="hidden" name="tag" value="<%= tag %>">
                             <!-- Use a submit button instead of a regular button -->
                             <!-- Add an onclick event to update the selected tag and change button color -->
-                            <button type="submit" class="btn btn-secondary me-2 mb-2 tag-button" data-tag="<%= tag %>"><%= tag %></button>
+                            <button type="submit" class="btn btn-primary me-2 mb-2 tag-button" data-tag="<%= tag %>"><%= tag %></button>
                         </form>
                     <% }) %>
                 <% }) %>
@@ -111,7 +110,7 @@
             // Remove 'btn-primary' class from all filter buttons
             $('.tag-button').removeClass('btn-primary');
             // Add 'btn-primary' class to the clicked filter button
-            $(this).addClass('btn-primary');
+            $(this).addClass('btn btn-success');
         });
     });
 </script>

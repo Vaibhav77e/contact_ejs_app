@@ -5,7 +5,7 @@
 
 <body>
   <header class="showcase">
-    <div class="showcase-content">
+    <div class="showcase-content-register">
       <div class="showcase-top">
         <h1>REGISTER</h1>
       </div>
@@ -13,12 +13,12 @@
         <form id="registrationForm" method="POST" action="/register" onsubmit="return validateForm()">
           <h2>Create new account
           </h2>
-          <div class="info">
+          <div class="infoo">
             <input class="email" type="text" placeholder="Name" id="name" name="name" required> <br>
             <span id="nameError" class="error"></span><br> <!-- Error message for name -->
             <input class="email" type="email" placeholder="Email" id="email" name="email" required> <br>
-            <span id="emailError" class="error"></span><br> <!-- Error message for email -->
-            <input class="email" type="tel" placeholder="Phone" id="phone" name="phone" required> <br>
+            <span id="emailError" class="error my-3"></span><br> <!-- Error message for email -->
+            <input class="email" type="tel" placeholder="Phone" id="phone" name="phone" maxlength="10" required> <br>
             <span id="phoneError" class="error"></span><br> <!-- Error message for phone -->
             <input class="email" type="password" placeholder="Password" id="password" name="password" required> <br>
           </div>
