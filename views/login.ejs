@@ -4,10 +4,6 @@
 <%- include('styles/styles') %>
 
 <body>
-  
-    <!-- Error message container -->
-   
-    
   <header class="showcase">
     <div class="showcase-content">
       <div class="showcase-top">
@@ -48,7 +44,7 @@
 
       // Reset previous error messages
       document.getElementById('error-message').innerText = '';
-      
+
       // Check email format
       var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
@@ -59,6 +55,9 @@
       // If all validations pass, return true to submit the form
       return true;
     }
+
+      
+    <!-- Error message container -->
 
     // Function to display modal
     function displayModal(message) {
